@@ -1,0 +1,304 @@
+# P
+-
+  full: Anzu
+  first: Anzu
+  last: Anzu
+  full_revert: Anzu
+  alias:
+  - Ann
+
+# STARMAKER PRODUCTION
+# fine
+-
+  full: Tenshouin Eichi
+  full_revert: Eichi Tenshouin
+  first: Eichi
+  last: Tenshouin
+- 
+  full: Hibiki Wataru
+  full_revert: Wataru Hibiki
+  first: Wataru
+  last: Hibiki
+-
+  full: Himemiya Tori
+  full_revert: Tori Himemiya
+  first: Tori
+  last: Himemiya
+-
+  full: Fushimi Yuzuru
+  full_revert: Yuzuru Fushimi
+  first: Yuzuru
+  last: Fushimi
+# Trickstar
+-
+  full: Hidaka Hokuto
+  full_revert: Hokuto Hidaka
+  first: Hokuto
+  last: Hidaka
+-
+  full: Akehoshi Subaru
+  full_revert: Subaru Akehoshi
+  first: Subaru
+  last: Akehoshi
+-
+  full: Yuuki Makoto
+  full_revert: Makoto Yuuki
+  first: Makoto
+  last: Yuuki
+-
+  full: Isara Mao
+  first: Mao
+  last: Isara
+  full_revert: Mao Isara
+# 流星队
+-
+  full: Nagumo Tetora
+  first: Tetora
+  last: Nagumo
+  full_revert: Tetora Nagumo
+-
+  full: Takamine Midori
+  full_revert: Midori Takamine
+  first: Midori
+  last: Takamine
+
+-
+  full: Sengoku Shinobu
+  full_revert: Shinobu Sengoku
+  first: Shinobu
+  last: Sengoku
+
+-
+  full: Morisawa Chiaki
+  full_revert: Chiaki Morisawa
+  first: Chiaki
+  last: Morisawa
+-
+  full: Shinkai Kanata
+  full_revert: Kanata Shinkai
+  first: Kanata
+  last: Shinkai
+# ALKALOID
+-
+  full: Amagi Hiiro
+  full_revert: Hiiro Amagi
+  first: Hiiro
+  last: Amagi
+  alias:
+  - Hiiro - kun
+  - Hiro - kun
+-
+  full: Shiratori Aira
+  full_revert: Aira Shiratori
+  first: Aira
+  last: Shiratori
+  alias:
+  - Love - han
+
+-
+  full: Ayase Mayoi
+  full_revert: Mayoi Ayase
+  first: Mayoi
+  last: Ayase
+  alias:
+  - Mayoi - san
+-
+  full: Kazehaya Tatsumi
+  full_revert: Tatsumi Kazehaya
+  first: Tatsumi
+  last: Kazehaya
+
+# COSMIC PRODUCTION
+# Eden
+-
+  full: Ran Nagisa
+  full_revert: Nagisa Ran
+  first: Nagisa
+  last: Ran
+  alias:
+  - Nagisa - Sama
+-
+  full: Tomoe Hiyori
+  full_revert: Hiyori Tomoe
+  first: Hiyori
+  last: Tomoe
+
+-
+  full: Saegusa Ibara
+  full_revert: Ibara Saegusa
+  first: Ibara
+  last: Saegusa
+-
+  full: Sazanami Jun
+  full_revert: Jun Sazanami
+  first: Jun
+  last: Sazanami
+# Valkyrie
+-
+  full: Itsuki Shu
+  first: Shu
+  last: Itsuki
+  full_revert: Shu Itsuki
+  alias:
+  - Oshi - san
+
+-
+  full: Kagehira Mika
+  first: Mika
+  last: Kagehira
+  full_revert: Mika Kagehira
+
+# 2wink
+-
+  full: Aoi Hinata
+  full_revert: Hinata Aoi
+  first: Hinata
+  last: Aoi
+- 
+  full: Aoi Yuta
+  full_revert: Yuta Aoi
+  first: Yuta
+  last: Aoi
+# Crazy:B
+-
+  full: Amagi Rinne
+  first: Rinne
+  last: Amagi
+  full_revert: Rinne Amagi
+-
+  full: HiMERU
+  first: HiMERU
+  last: HiMERU
+  full_revert: HiMERU
+  alias:
+  - HiMERU-han
+  - MERU
+-
+  full: Oukawa Kohaku
+  first: Kohaku
+  last: Oukawa
+  full_revert: Kohaku Oukawa
+  alias:
+  - Kohaku-san
+  - Kohaku-chan
+-
+  full: Shiina Niki
+  first: Niki
+  last: Shiina
+  full_revert: Niki Shiina
+  alias:
+  - Shiina-san
+# Rythm Link
+# Undead
+-
+  full: Sakuma Rei
+  first: Rei
+  last: Sakuma
+  full_revert: Rei Samuka
+-
+  full: Hakaze Kaoru
+  first: Kaoru
+  last: Hakaze
+  full_revert: Kaoru Hakaze
+  alias:
+  - Kaoru-kun
+
+-
+  full: Ogami Koga
+  first: Koga
+  last: Ogami
+  full_revert: Koga Ogami
+-
+  full: Otogari Adonis
+  first: Adonis
+  last: Otogari
+  full_revert: Adonis Otogari
+# Ra*bits
+-
+  full: Mashiro Tomoya
+  first: Tomoya
+  last: Mashiro
+  full_revert: Tomoya Mashiro
+-
+  full: Nito Nazuna
+  full_revert: Nazuna Nito
+  first: Nazuna
+  last: Nito
+- 
+  full: Tenma Mitsuru
+  full_revert: Mitsuru Tenma
+  first: Mitsuru
+  last: Tenma
+-
+  full: Shino Hajime
+  full_revert: Hajime Shino
+  first: Hajime
+  last: Shino
+
+# 红月
+-
+  full: Hasumi Keito
+  first: Keito
+  last: Hasumi
+  full_revert: Keito Hasumi
+-
+  full: Kiryu Kuro
+  first: Kuro
+  last: Kiryu
+  full_revert: Kuro Kiryu
+-
+  full: Kanzaki Souma
+  first: Souma
+  last: Kanzaki
+  full_revert: Souma Kanzaki
+# NewDi
+# Knights
+- 
+  full: Suou Tsukasa
+  first: Tsukasa
+  last: Suou
+  full_revert: Tsukasa Suou
+  alias:
+  - Suo
+-
+  full: Tsukinaga Leo
+  first: Leo
+  last: Tsukinaga
+  full_revert: Leo Tsukinaga
+-
+  full: Sena Izumi
+  full_revert: Izumi Sena
+  first: Izumi
+  last: Sena
+-
+  full: Sakuma Riitsu
+  first: Riitsu
+  last: Sakuma
+  full_revert: Riitsu Sakuma
+-
+  full: Narukami Arashi
+  first: Arashi
+  last: Narukami
+  full_revert: Arashi Narukami
+# Switch
+-
+  full: Sakasaki Natsume
+  full_revert: Natsume Sakasaki
+  last: Sakasaki
+  first: Natsume
+-
+  full: Aoba Tsumugi
+  first: Aoba
+  last: Tsumugi
+  full_revert: Tsumugi Aoba
+-
+  full: Harukawa Sora
+  first: Sora
+  last: Harukawa
+  full_revert: Sora Harukawa
+# MaM
+-
+  full: Madara Mikejima
+  first: Madara
+  last: Mikejima
+  full_revert: Mikejima Madara
