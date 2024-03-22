@@ -52,6 +52,7 @@ class Character:
                 return True
             if re.search(r'\b' + re.escape(alien.lower()) + r'\b', body):
                 return True
+    
 
     def replace(self, body, new_name):
         for key in character_keys:
@@ -86,16 +87,22 @@ def load_characters_from_yaml_file(file_path):
         characters_objs[new_character.first] = new_character
     return characters_objs
 
-def load_exception_names_from_yaml_file(file_path):
-    exception_names = []
+def load_name_list_from_yaml_file(file_path):
+    name_list = []
     with open(file_path, 'r') as stream:
         try:
-            exception_names = yaml.safe_load(stream)
+            name_list = yaml.safe_load(stream)
         except yaml.YAMLError as exc:
             print(exc)
-    return exception_names
+    return name_list
 
-
+def simple_text_replace(body, old_name, new_name):
+    pattern = r'\b' + re.escape(old_name) + r'\b'
+    body = re.sub(pattern, new_name, body)
+    pattern = r'\b' + re.escape(old_name+"'s") + r'\b'
+    body = re.sub(pattern, new_name+"'s", body)
+    pattern = r'\b' + re.escape(old_name.lower()) + r'\b'
+    return body
 
 
 nlp_lang_dict = {"English": "en_core_web_sm", "Chinese": "zh_core_web_sm"}

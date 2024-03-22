@@ -6,6 +6,22 @@
   full_revert: Anzu
   alias:
   - Ann
+  - Anzu - chan
+-
+  full: Sagami Jin
+  full_revert: Jin Sagami
+  first: Jin
+  last: Sagami
+-
+  full: Kunugi Akiomi
+  full_revert: Akinomi Kunugi
+  first: Akinomi
+  last: Kunugi
+-
+  full: Tojo Kaname
+  full_revert: Kaname Tojo
+  first: Kaname
+  last: Tojo
 
 # STARMAKER PRODUCTION
 # fine
@@ -50,6 +66,9 @@
   first: Mao
   last: Isara
   full_revert: Mao Isara
+  alias:
+  - Mao - chan
+  - Maa - kun
 # 流星队
 -
   full: Nagumo Tetora
@@ -78,6 +97,8 @@
   full_revert: Kanata Shinkai
   first: Kanata
   last: Shinkai
+  alias:
+  - Shinkai - kun
 # ALKALOID
 -
   full: Amagi Hiiro
@@ -95,6 +116,7 @@
   last: Shiratori
   alias:
   - Love - han
+  - Rabu
 
 -
   full: Ayase Mayoi
@@ -103,11 +125,15 @@
   last: Ayase
   alias:
   - Mayoi - san
+  - Mayoi - chan
+  - Mayoi - han
 -
   full: Kazehaya Tatsumi
   full_revert: Tatsumi Kazehaya
   first: Tatsumi
   last: Kazehaya
+  alias:
+  - Tatsumi - san
 
 # COSMIC PRODUCTION
 # Eden
@@ -123,6 +149,8 @@
   full_revert: Hiyori Tomoe
   first: Hiyori
   last: Tomoe
+  alias:
+  - Ohiisan
 
 -
   full: Saegusa Ibara
@@ -136,6 +164,7 @@
   last: Sazanami
   alias:
   - Jun - kun
+  - Jun - han
 # Valkyrie
 -
   full: Itsuki Shu
@@ -145,12 +174,17 @@
   alias:
   - Oshi - san
   - Shu - kun
+  - Shu - chan
+  - Oshi
+  - Oshi - san~
 
 -
   full: Kagehira Mika
   first: Mika
   last: Kagehira
   full_revert: Mika Kagehira
+  alias:
+  - Mikarin
 
 # 2wink
 -
@@ -169,6 +203,8 @@
   first: Rinne
   last: Amagi
   full_revert: Rinne Amagi
+  alias:
+  - Rinne - kun
 -
   full: HiMERU
   first: HiMERU
@@ -177,6 +213,8 @@
   alias:
   - HiMERU - han
   - MERU
+  - Merumeru
+  - Merumeru~
 -
   full: Oukawa Kohaku
   first: Kohaku
@@ -185,6 +223,7 @@
   alias:
   - Kohaku - san
   - Kohaku - chan
+  - Sakura - kun
 -
   full: Shiina Niki
   first: Niki
@@ -198,7 +237,9 @@
   full: Sakuma Rei
   first: Rei
   last: Sakuma
-  full_revert: Rei Samuka
+  full_revert: Rei Sakama
+  alias:
+  - Sakuma - san
 -
   full: Hakaze Kaoru
   first: Kaoru
@@ -212,6 +253,9 @@
   first: Koga
   last: Ogami
   full_revert: Koga Ogami
+  alias:
+  - Wan - chan
+  - Oogami
 -
   full: Otogari Adonis
   first: Adonis
@@ -245,6 +289,10 @@
   first: Keito
   last: Hasumi
   full_revert: Keito Hasumi
+  alias:
+  - Hasumi - senpai
+  - Hasumi - kun
+  - Keito~
 -
   full: Kiryu Kuro
   first: Kuro
@@ -279,6 +327,8 @@
   first: Riitsu
   last: Sakuma
   full_revert: Riitsu Sakuma
+  alias:
+  - Ritsu
 -
   full: Narukami Arashi
   first: Arashi
