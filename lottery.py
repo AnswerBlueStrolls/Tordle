@@ -3,7 +3,6 @@ import sys
 
 def lottery(argv, arc):
     config_name = argv[1]
-    print(argv, arc)
     lottery = face.FaceOff(config_name)
     lottery.face_off()
 
