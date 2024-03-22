@@ -87,6 +87,7 @@
   alias:
   - Hiiro - kun
   - Hiro - kun
+  - Hii - kun
 -
   full: Shiratori Aira
   full_revert: Aira Shiratori
@@ -133,6 +134,8 @@
   full_revert: Jun Sazanami
   first: Jun
   last: Sazanami
+  alias:
+  - Jun - kun
 # Valkyrie
 -
   full: Itsuki Shu
@@ -141,6 +144,7 @@
   full_revert: Shu Itsuki
   alias:
   - Oshi - san
+  - Shu - kun
 
 -
   full: Kagehira Mika
@@ -171,7 +175,7 @@
   last: HiMERU
   full_revert: HiMERU
   alias:
-  - HiMERU-han
+  - HiMERU - han
   - MERU
 -
   full: Oukawa Kohaku
@@ -179,15 +183,15 @@
   last: Oukawa
   full_revert: Kohaku Oukawa
   alias:
-  - Kohaku-san
-  - Kohaku-chan
+  - Kohaku - san
+  - Kohaku - chan
 -
   full: Shiina Niki
   first: Niki
   last: Shiina
   full_revert: Niki Shiina
   alias:
-  - Shiina-san
+  - Shiina - san
 # Rythm Link
 # Undead
 -
@@ -201,7 +205,7 @@
   last: Hakaze
   full_revert: Kaoru Hakaze
   alias:
-  - Kaoru-kun
+  - Kaoru - kun
 
 -
   full: Ogami Koga
