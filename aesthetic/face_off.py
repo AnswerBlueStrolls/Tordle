@@ -9,7 +9,7 @@ class FaceOff:
     changed_characters = {}
     config = {}
     exceptions = []
-    meta_characters = []
+    meta_characters = {}
 
     def __init__(self, config_file):
         base_path = os.path.dirname(config_file)
@@ -28,9 +28,10 @@ class FaceOff:
         self.original_face_part = choose_piece(self.original_body, total)
     
     def mapping_meta_character(self, in_name):
-        for character in self.meta_characters:
+        for first in self.meta_characters.keys():
+            character = self.meta_characters[first]
             if character.is_the_same_person(in_name):
-                return character.first
+                return first
         return ""
 
     def find_characters(self):
@@ -49,12 +50,12 @@ class FaceOff:
                 self.changed_characters[character_name] = ""
                 continue
             self.ask_for_help(nlp_name)
-           
-
         # Find the characters that are in the original face but not found by nlp
-        for character in self.meta_characters:
+        for first in self.meta_characters.keys():
+            character = self.meta_characters[first]
             if character.exist_in_text(self.original_face_part):
-                self.changed_characters[character.first] = ""
+                self.changed_characters[first] = ""
+
     def find_avatars(self):
         for character in self.changed_characters.keys():
             print(character)
@@ -78,6 +79,14 @@ class FaceOff:
             return self.generate_random_name()
         else:
             return ret_name
+    def do_replace_face(self):
+        substitute = self.original_face_part
+        for first in self.changed_characters:
+            character = self.meta_characters[first]
+            if character is None:
+                continue
+            substitute = character.replace(self.original_face_part, self.changed_characters[first])
+        return substitute
 
     def face_off(self):
         self.choose_face_part()
@@ -85,6 +94,8 @@ class FaceOff:
         print_highlight_keywords(self.original_face_part, self.changed_characters.keys())
         self.find_avatars()
         print(self.changed_characters)
+        result = self.do_replace_face()
+        print_highlight_keywords(result, self.changed_characters.values())
 
     
 

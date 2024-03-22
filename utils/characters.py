@@ -53,9 +53,29 @@ class Character:
             if re.search(r'\b' + re.escape(alien.lower()) + r'\b', body):
                 return True
 
+    def replace(self, body, new_name):
+        for key in character_keys:
+            old_name = self.get_name(key)
+            if len(old_name) == 0:
+                continue
+            pattern = r'\b' + re.escape(old_name) + r'\b'
+            body = re.sub(pattern, new_name, body)
+            pattern = r'\b' + re.escape(old_name+"'s") + r'\b'
+            body = re.sub(pattern, new_name+"'s", body)
+            pattern = r'\b' + re.escape(old_name.lower()) + r'\b'
+            body = re.sub(pattern, new_name, body)
+        for alien in self.alias:
+            pattern = r'\b' + re.escape(alien) + r'\b'
+            body = re.sub(pattern, new_name, body)
+            pattern = r'\b' + re.escape(alien+"'s") + r'\b'
+            body = re.sub(pattern, new_name+"'s", body)
+            pattern = r'\b' + re.escape(alien.lower()) + r'\b'
+            body = re.sub(pattern, new_name, body)
+        return body
+
 def load_characters_from_yaml_file(file_path):
     characters = []
-    characters_objs = []
+    characters_objs = {}
     with open(file_path, 'r') as stream:
         try:
             characters = yaml.safe_load(stream)
@@ -63,7 +83,7 @@ def load_characters_from_yaml_file(file_path):
             print(exc)
     for c in characters:
         new_character = Character(c)
-        characters_objs.append(new_character)
+        characters_objs[new_character.first] = new_character
     return characters_objs
 
 def load_exception_names_from_yaml_file(file_path):
