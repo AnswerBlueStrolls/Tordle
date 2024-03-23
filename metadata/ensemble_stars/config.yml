@@ -3,4 +3,4 @@ table_name: fanfics_raw
 language: English
 fanfic_index: 21
 limit: 3500
-debug: true
+debug: false

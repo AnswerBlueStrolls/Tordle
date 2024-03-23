@@ -7,6 +7,7 @@
   alias:
   - Ann
   - Anzu - chan
+  - Ann - chan
 -
   full: Sagami Jin
   full_revert: Jin Sagami
@@ -35,6 +36,8 @@
   full_revert: Wataru Hibiki
   first: Wataru
   last: Hibiki
+  alias:
+  - Shisho
 -
   full: Himemiya Tori
   full_revert: Tori Himemiya
@@ -99,6 +102,7 @@
   last: Shinkai
   alias:
   - Shinkai - kun
+  - Kanacchi
 # ALKALOID
 -
   full: Amagi Hiiro
@@ -205,6 +209,7 @@
   full_revert: Rinne Amagi
   alias:
   - Rinne - kun
+  - Amagi - kun
 -
   full: HiMERU
   first: HiMERU
@@ -213,6 +218,7 @@
   alias:
   - HiMERU - han
   - MERU
+  - Himeru
   - Merumeru
   - Merumeru~
 -

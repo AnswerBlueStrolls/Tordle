@@ -161,4 +161,5 @@ cython_debug/
 *.db
 metadata/ensemble_stars/puzzles/
 metadata/ensemble_stars/answers/
+metadata/ensemble_stars/loader/
 .DS_Store

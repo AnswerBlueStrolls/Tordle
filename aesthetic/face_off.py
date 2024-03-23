@@ -1,7 +1,8 @@
-import yaml, math, os, random, re, datetime, json, textwrap
+import yaml, math, os, random, re, datetime, json, textwrap, logging
 from faker import Faker
 import utils.characters as characters, utils.db_connection as database
 from PIL import Image, ImageDraw, ImageFont
+bad_alias = ["Miss", "Amber", "Mr"]
 class FaceOff:
     id = 0
     original_body = ""
@@ -62,6 +63,9 @@ class FaceOff:
                 continue
             if self.debug_mode:
                 self.ask_for_help(nlp_name)
+            else:
+                print("Error occurred.")
+                logging.error("id: %d, name: %s", self.id, nlp_name)
         # Find the characters that are in the original face but not found by nlp
         for first in self.meta_characters.keys():
             character = self.meta_characters[first]
@@ -90,8 +94,9 @@ class FaceOff:
         ret_name = full_name.split()[0]
         if ret_name in self.exceptions:
             return self.generate_random_name()
-        else:
-            return ret_name
+        if ret_name in bad_alias:
+            return self.generate_random_name()
+        return ret_name
     def do_replace_face(self):
         substitute = self.original_face_part
         for first in self.changed_characters:
@@ -116,11 +121,15 @@ class FaceOff:
         if not os.path.exists(answer_dir):
             os.makedirs(answer_dir)
         with open(os.path.join(puzzle_dir, puzzle_file_name), 'w') as file:
-            wrapped = textwrap.fill(puzzle, 45, replace_whitespace=False)
+            paragraphs = puzzle.strip().split('\n')
+            formatted_text = "\n"
+            for paragraph in paragraphs:
+                formatted_text += textwrap.fill(paragraph, width=60,initial_indent="    ", subsequent_indent="  ")
+                formatted_text += "\n"
             file.write(puzzle)
             print("puzzle generated")
             font = os.path.join(self.base_path, "font.ttf")
-            img = text_to_image(wrapped, font, 28, 600, 10)
+            img = text_to_image(formatted_text, font, 28,750, 20)
             img.save(os.path.join(puzzle_dir, image_file_name))
 
         with open(os.path.join(answer_dir, answer_file_name), 'w') as file:

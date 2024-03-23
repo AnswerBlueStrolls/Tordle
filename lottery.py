@@ -1,5 +1,6 @@
 import aesthetic.face_off as face
-import sys
+import sys, logging
+logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(message)s')
 
 def lottery(argv, arc):
     config_name = argv[1]

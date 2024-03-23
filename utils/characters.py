@@ -59,20 +59,28 @@ class Character:
             old_name = self.get_name(key)
             if len(old_name) == 0:
                 continue
-            pattern = r'\b' + re.escape(old_name) + r'\b'
-            body = re.sub(pattern, new_name, body)
-            pattern = r'\b' + re.escape(old_name+"'s") + r'\b'
-            body = re.sub(pattern, new_name+"'s", body)
-            pattern = r'\b' + re.escape(old_name.lower()) + r'\b'
-            body = re.sub(pattern, new_name, body)
+            body = replace_all_possible_name(old_name, new_name, body)
         for alien in self.alias:
-            pattern = r'\b' + re.escape(alien) + r'\b'
-            body = re.sub(pattern, new_name, body)
-            pattern = r'\b' + re.escape(alien+"'s") + r'\b'
-            body = re.sub(pattern, new_name+"'s", body)
-            pattern = r'\b' + re.escape(alien.lower()) + r'\b'
-            body = re.sub(pattern, new_name, body)
+            old_name = alien
+            if "-" in alien:
+                old_name = re.sub(r'\s+', '', alien)
+            body = replace_all_possible_name(old_name, new_name, body)
         return body
+
+def replace_all_possible_name(replaced_name, new_name, body):
+    base = [replaced_name, replaced_name.lower(), replaced_name.upper()]
+    for old_name in base:
+        pattern = r'\b' + re.escape(old_name) + r'\b'
+        body = re.sub(pattern, new_name, body)
+        pattern = r'\b' + re.escape(old_name+"'s") + r'\b'
+        body = re.sub(pattern, new_name+"'s", body)
+        pattern = r'\b' + re.escape(old_name+"s") + r'\b'
+        body = re.sub(pattern, new_name+"'s", body)
+        pattern = r'\b\.*' + re.escape(old_name) + r'\.*\b'
+        body = re.sub(pattern, new_name+"'s", body)
+        pattern = r'\b(\w+-)?' + re.escape(old_name) + r'(-\w+)?\b'
+        body = re.sub(pattern, new_name, body)
+    return body
 
 def load_characters_from_yaml_file(file_path):
     characters = []
@@ -96,12 +104,11 @@ def load_name_list_from_yaml_file(file_path):
             print(exc)
     return name_list
 
-def simple_text_replace(body, old_name, new_name):
-    pattern = r'\b' + re.escape(old_name) + r'\b'
-    body = re.sub(pattern, new_name, body)
-    pattern = r'\b' + re.escape(old_name+"'s") + r'\b'
-    body = re.sub(pattern, new_name+"'s", body)
-    pattern = r'\b' + re.escape(old_name.lower()) + r'\b'
+def simple_text_replace(body, replaced_name, new_name):
+    base = [replaced_name, replaced_name+"'s", replaced_name.lower(), replaced_name.upper()]
+    for old_name in base:
+        pattern = r'\b' + re.escape(old_name) + r'\b'
+        body = re.sub(pattern, new_name, body)
     return body
 
 
