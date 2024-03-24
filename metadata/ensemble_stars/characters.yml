@@ -340,6 +340,8 @@
   first: Arashi
   last: Narukami
   full_revert: Arashi Narukami
+  alias:
+  - Naru
 # Switch
 -
   full: Sakasaki Natsume
@@ -362,3 +364,5 @@
   first: Madara
   last: Mikejima
   full_revert: Mikejima Madara
+  alias:
+  - Madara - han

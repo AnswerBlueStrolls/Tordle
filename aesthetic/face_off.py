@@ -1,6 +1,6 @@
 import yaml, math, os, random, re, datetime, json, textwrap, logging
 from faker import Faker
-import utils.characters as characters, utils.db_connection as database
+import utils.characters as characters, utils.db_connection as database, utils.translator as trans
 from PIL import Image, ImageDraw, ImageFont
 bad_alias = ["Miss", "Amber", "Mr"]
 class FaceOff:
@@ -106,13 +106,33 @@ class FaceOff:
             else:
                 new_name = self.changed_characters[first]
                 substitute = characters.simple_text_replace(substitute, first, new_name)
+            if first == "Natsume":
+                substitute = lowercase_end_of_words(substitute)
         return substitute
-    
+
+    def puzzle_to_imgfile(self, puzzle, font, file_path, lang="English"):
+        paragraphs = puzzle.strip().split('\n')
+        file_width = 750
+        width = 60
+        indent = "  "
+        if lang == "Chinese":
+            width = 30
+            file_width = 900
+            indent = "    "
+        formatted_text = "\n"
+        for paragraph in paragraphs:
+            paragraph = indent+paragraph
+            formatted_text += textwrap.fill(paragraph, width)
+            formatted_text += "\n"
+        img = text_to_image(formatted_text, font, 28, file_width, 20)
+        img.save(file_path)
+        print("File saved:", file_path)
+
     def write_out(self, puzzle, answer):
         current_time = datetime.datetime.now()
         time_string = current_time.strftime("%Y-%m-%d_%H%M%S")
         puzzle_file_name = "{}-{}_puzzle.txt".format(time_string, str(self.id))
-        image_file_name = "{}-{}_image.png".format(time_string, str(self.id))
+        image_file_name = "{}-{}_image_en.png".format(time_string, str(self.id))
         answer_file_name = "{}-{}_answer.txt".format(time_string, str(self.id))
         puzzle_dir = os.path.join(self.base_path, "puzzles")
         answer_dir = os.path.join(self.base_path, "answers")
@@ -120,23 +140,24 @@ class FaceOff:
             os.makedirs(puzzle_dir)
         if not os.path.exists(answer_dir):
             os.makedirs(answer_dir)
-        with open(os.path.join(puzzle_dir, puzzle_file_name), 'w') as file:
-            paragraphs = puzzle.strip().split('\n')
-            formatted_text = "\n"
-            for paragraph in paragraphs:
-                formatted_text += textwrap.fill(paragraph, width=60,initial_indent="    ", subsequent_indent="  ")
-                formatted_text += "\n"
-            file.write(puzzle)
-            print("puzzle generated")
-            font = os.path.join(self.base_path, "font.ttf")
-            img = text_to_image(formatted_text, font, 28,750, 20)
-            img.save(os.path.join(puzzle_dir, image_file_name))
-
         with open(os.path.join(answer_dir, answer_file_name), 'w') as file:
             id_text = "work id: {}\n".format(str(self.id))
             file.write(id_text)
             json.dump(answer, file)
-            print("answer generated")
+            print("Answer generated.")
+        with open(os.path.join(puzzle_dir, puzzle_file_name), 'w') as file:
+            file.write(puzzle)
+            print("Puzzle generated.")
+            print("Start translator, DO NOT use mouse or keyboard!!!")
+            tranlated_puzzle = trans.translate_with_deepl(puzzle)
+            print("Puzzle translated.")
+            enfont = os.path.join(self.base_path, "font_en.ttf")
+            en_img_path = os.path.join(puzzle_dir, image_file_name)
+            self.puzzle_to_imgfile(puzzle, enfont, en_img_path)
+            cnfont = os.path.join(self.base_path, "font_cn.ttf")
+            cn_img_path = os.path.join(puzzle_dir, image_file_name.replace("en.png", "cn.png"))
+            self.puzzle_to_imgfile(tranlated_puzzle, cnfont, cn_img_path, lang="Chinese")
+
 
     def face_off(self):
         self.choose_face_part()
@@ -144,6 +165,7 @@ class FaceOff:
         if len(self.changed_characters) == 0:
             return False
         self.find_avatars()
+        print("ID: ", str(self.id))
         result = self.do_replace_face()
         if self.debug_mode:
             res = highlight_keywords_all(result, self.changed_characters.values())
@@ -154,6 +176,10 @@ class FaceOff:
 
     
 
+def lowercase_end_of_words(text):
+    pattern = re.compile(r'(\b[A-Za-z]*)([A-Z]+)\b')
+    result = pattern.sub(lambda match: match.group(1) + match.group(2).lower(), text)
+    return result
 
 def text_to_image(text, font_path, font_size, image_width, margin):
     # Load a font

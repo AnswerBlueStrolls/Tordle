@@ -78,7 +78,7 @@ def replace_all_possible_name(replaced_name, new_name, body):
         body = re.sub(pattern, new_name+"'s", body)
         pattern = r'\b\.*' + re.escape(old_name) + r'\.*\b'
         body = re.sub(pattern, new_name+"'s", body)
-        pattern = r'\b(\w+-)?' + re.escape(old_name) + r'(-\w+)?\b'
+        pattern = r'\b(\w+-)?' + re.escape(old_name) + r'(-\w+[?!.~]*)?\b'
         body = re.sub(pattern, new_name, body)
     return body
 
@@ -134,11 +134,13 @@ def find_characters_nlp(text, language):
 find out if the two names are the same
 '''
 def the_same_name(name_meta, name_body):
+    if len(name_meta) == 0 or len(name_body) == 0:
+        return ""
     name1 = name_meta.lower()
     name2 = name_body.lower()
     if name1 == name2:
         return name1
-    if re.search(r'\b' + re.escape("-") + r'\b', name_body): # the body name is like xxx-san
+    if "-" in name_body: # the body name is like xxx-san
         return the_same_name(name_meta.split()[0], name_body.split()[0])
     return ""
 
