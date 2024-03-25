@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 import math, os
-from Tordle.utils.characters import load_name_list_from_yaml_file
+from utils.characters import load_name_list_from_yaml_file
 script_location = os.path.dirname(os.path.abspath(__file__))
 sensitive_words = load_name_list_from_yaml_file(os.path.join(script_location, "..", "metadata/common", "sensitive_words.yml"))
 def find_sensitive_words_index(text):
@@ -43,6 +43,7 @@ def text_to_image(text, font_path, font_size, image_width, margin):
             x = margin
             draw.text((x, y), line, fill='black', font=font)
         else:
+            print("Found sensitive words!")
             start = 0
             x = margin
             for i in words_index:

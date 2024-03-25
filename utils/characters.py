@@ -141,8 +141,8 @@ def the_same_name(name_meta, name_body):
     name1 = name_meta.lower()
     name2 = name_body.lower()
     if name1 == name2:
-        return name1
+        return name_meta
     if "-" in name_body: # the body name is like xxx-san
-        return the_same_name(name_meta.split()[0], name_body.split()[0])
+        return the_same_name(name_meta.split('-')[0].strip(), name_body.split('-')[0].strip())
     return ""
 

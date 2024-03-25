@@ -23,3 +23,16 @@ class AODatabase:
         body = result[0][self.fanfic_index]
         conn.close()
         return id, body
+
+    def get_fic_by_id(self, id):
+        sql = "SELECT * FROM {} WHERE language = '{}' AND work_id = {} ORDER BY RANDOM() LIMIT 1".format(self.table_name, self.language, id)
+        conn = sqlite3.connect(self.db_name)
+        crsr = conn.cursor()
+        crsr.execute(sql)
+        result = crsr.fetchall()
+        if len(result) == 0:
+            return ""
+        id = result[0][0]
+        body = result[0][self.fanfic_index]
+        conn.close()
+        return body

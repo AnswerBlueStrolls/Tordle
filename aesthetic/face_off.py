@@ -3,7 +3,7 @@ from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
 import utils.string_functions as str_func
 import utils.image as img_func
-bad_alias = ["Miss", "Amber", "Mr"]
+bad_alias = ["Miss", "Amber", "Mr", "Mary"]
 hidden_str = "(HIDDEN_INFO)"
 class FaceOff:
     id = 0
@@ -18,7 +18,7 @@ class FaceOff:
     debug_mode = False
     base_path = ""
 
-    def __init__(self, config_file):
+    def __init__(self, config_file, id):
         self.base_path = os.path.dirname(config_file)
         self.config = yaml.safe_load(open(config_file))
         self.config["db_name"] = os.path.join(self.base_path, self.config["db_name"])
@@ -26,7 +26,11 @@ class FaceOff:
             self.debug_mode = True
         db = database.AODatabase()
         db.init_from_config(self.config)
-        self.id, self.original_body = db.get_one_fic_randomly()
+        if id > 0:
+            self.id = id
+            self.original_body = db.get_fic_by_id(id)
+        else:
+            self.id, self.original_body = db.get_one_fic_randomly()
         self.meta_characters = characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml"))
         self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
         self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names.yml"))
