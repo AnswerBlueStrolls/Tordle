@@ -1,7 +1,8 @@
-import yaml, math, os, random, re, datetime, json, textwrap, logging
+import yaml, math, os, datetime, json, textwrap, logging
 from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
-from PIL import Image, ImageDraw, ImageFont
+import utils.string_functions as str_func
+import utils.image as img_func
 bad_alias = ["Miss", "Amber", "Mr"]
 hidden_str = "(HIDDEN_INFO)"
 class FaceOff:
@@ -35,7 +36,7 @@ class FaceOff:
         total = self.config["limit"]
         if half < total:
             total = half
-        self.original_face_part = choose_piece(self.original_body, total)
+        self.original_face_part = str_func.choose_piece(self.original_body, total)
     
     def mapping_meta_character(self, in_name):
         for first in self.meta_characters.keys():
@@ -107,7 +108,7 @@ class FaceOff:
                 new_name = self.changed_characters[first]
                 substitute = characters.simple_text_replace(substitute, first, new_name)
             if first == "Natsume":
-                substitute = lowercase_end_of_words(substitute)
+                substitute = str_func.lowercase_end_of_words(substitute)
         return substitute
     def do_other_replace(self, substitute):
         # replace unfound special_names
@@ -129,7 +130,7 @@ class FaceOff:
             paragraph = indent+paragraph
             formatted_text += textwrap.fill(paragraph, width)
             formatted_text += "\n"
-        img = text_to_image(formatted_text, font, 28, file_width, 20)
+        img = img_func.text_to_image(formatted_text, font, 28, file_width, 20)
         img.save(file_path)
         print("File saved:", file_path)
 
@@ -174,87 +175,9 @@ class FaceOff:
         result = self.do_replace_face(self.original_face_part)
         result = self.do_other_replace(result)
         if self.debug_mode:
-            res = highlight_keywords_all(result, self.changed_characters.values())
-            res = highlight_keywords_all(result, self.special_names)
-            res = highlight_keywords_all(res, self.changed_characters.keys())
+            res = str_func.highlight_keywords_all(result, self.changed_characters.values())
+            res = str_func.highlight_keywords_all(result, self.special_names)
+            res = str_func.highlight_keywords_all(res, self.changed_characters.keys())
             print(res)
         self.write_out(result, self.changed_characters)
         return True
-
-    
-
-def lowercase_end_of_words(text):
-    pattern = re.compile(r'(\b[A-Za-z]*)([A-Z]+)\b')
-    result = pattern.sub(lambda match: match.group(1) + match.group(2).lower(), text)
-    return result
-
-def text_to_image(text, font_path, font_size, image_width, margin):
-    # Load a font
-    font = ImageFont.truetype(font_path, font_size)
-    line_spacing = 1
-    # Create a drawing context to measure text size
-    draw = ImageDraw.Draw(Image.new('RGB', (1, 1)))
-
-    # Calculate the number of lines and height required for the text
-    lines = text.count('\n') + 1
-    line_height = font.getsize(text)[1] * line_spacing
-    text_height = lines * line_height 
-
-    # Calculate the size of the image with margins
-    image_height = math.floor(text_height + 2 * margin)
-
-    # Create a blank image with a white background and margins
-    img = Image.new('RGB', (image_width, image_height), color='white')
-    img.info['dpi'] = (600, 600)
-    # Initialize the drawing context
-    draw = ImageDraw.Draw(img)
-
-    # Calculate the position to center text vertically within margins
-    y = margin + (text_height - lines * line_height) // 2
-
-    for line in text.split('\n'):
-        text_width, text_height = draw.textsize(line, font=font)
-        #x = (image_width - text_width) // 2
-        draw.text((margin, y), line, fill='black', font=font)
-        y += int(text_height * line_spacing)
-
-    return img
-
-
-def combine_piece(strings, start, end):
-    selected_strings = strings[start:end+1]
-    cleaned_list = list(filter(lambda line: line.strip(), selected_strings))
-    return '\n'.join(cleaned_list)
-
-def choose_piece(body, total):
-    strings = body.splitlines()
-    not_filled = True
-    start_index = 0
-    end_index = 0
-    while not_filled:
-        random_start = random.randint(0, len(strings) - 1)
-        sum = 0
-        start_index = random_start
-        for i in range(random_start, len(strings)):
-            if sum == 0 and len(strings[i]) < 3:
-                start_index += 1
-                continue
-            sum += len(strings[i])
-            if sum > total:
-                end_index = i-1
-                not_filled = False
-                break  
-            
-    return combine_piece(strings, start_index, end_index)
-
-def print_highlight_keywords(text, keyword_list):
-    highlighted_text = text
-    for keyword in keyword_list:
-        highlighted_text = re.sub(r'\b' + re.escape(keyword) + r'\b', f'\033[91m{keyword}\033[0m', highlighted_text, flags=re.IGNORECASE)
-    print(highlighted_text)
-
-def highlight_keywords_all(text, keyword_list):
-    highlighted_text = text
-    for keyword in keyword_list:
-        highlighted_text = re.sub(keyword, f'\033[91m{keyword}\033[0m', highlighted_text, flags=re.IGNORECASE)
-    return highlighted_text
