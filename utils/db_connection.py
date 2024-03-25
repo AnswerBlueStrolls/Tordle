@@ -1,4 +1,4 @@
-import sqlite3
+import sqlite3, pandas
 class AODatabase:
     db_name = ""
     table_name = ""
@@ -25,14 +25,24 @@ class AODatabase:
         return id, body
 
     def get_fic_by_id(self, id):
+        print("Find if id exist", id)
         sql = "SELECT * FROM {} WHERE language = '{}' AND work_id = {} ORDER BY RANDOM() LIMIT 1".format(self.table_name, self.language, id)
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
         crsr.execute(sql)
         result = crsr.fetchall()
         if len(result) == 0:
+            print(id, "not exist")
+            conn.close()
             return ""
         id = result[0][0]
         body = result[0][self.fanfic_index]
         conn.close()
         return body
+    
+    def load_csv(self, csv_file):
+        conn = sqlite3.connect(self.db_name)
+        col_names = ['work_id', 'title', 'author', 'rating', 'category', 'fandom', 'relationship', 'character', 'additional tags', 'language', 'published', 'status', 'status date', 'words', 'chapters', 'comments', 'kudos', 'bookmarks', 'hits', 'all_kudos', 'all_bookmarks', 'body']
+        df = pandas.read_csv(csv_file, names=col_names)
+        df.to_sql(self.table_name, conn, if_exists='append', index=False)
+        conn.close()
