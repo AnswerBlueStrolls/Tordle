@@ -55,15 +55,18 @@ def translate_with_deepl(text):
     batch = []
     results = []
     for p in paragraphs:
-        if length + len(p) > 1500:
-            trans = do_one_trans(driver, '\n'.join(batch))
+        if length + len(p) < 1500:
+            batch.append(p)
+            length += len(p)+1
+        else:
+            origin = '\n'.join(batch)
+            if len(origin) > 1500:
+                print("Translate length cannot exceed 1500!")
+            trans = do_one_trans(driver, origin)
             results.append(trans)
             batch = [p]
             length = len(p)
             continue
-        else:
-            batch.append(p)
-            length += len(p)
     # do the last part
     if length > 0:
         trans = do_one_trans(driver, '\n'.join(batch))

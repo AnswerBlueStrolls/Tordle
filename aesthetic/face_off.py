@@ -3,6 +3,7 @@ from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
 from PIL import Image, ImageDraw, ImageFont
 bad_alias = ["Miss", "Amber", "Mr"]
+hidden_str = "(HIDDEN_INFO)"
 class FaceOff:
     id = 0
     original_body = ""
@@ -55,7 +56,7 @@ class FaceOff:
             if nlp_name is None or nlp_name == "":
                 continue
             if nlp_name in self.special_names:
-                self.changed_characters[nlp_name] = "HIDDEN_INFO"
+                self.changed_characters[nlp_name] = hidden_str
                 continue
             character_name = self.mapping_meta_character(nlp_name)
             if character_name != "": # found a match character
@@ -97,8 +98,7 @@ class FaceOff:
         if ret_name in bad_alias:
             return self.generate_random_name()
         return ret_name
-    def do_replace_face(self):
-        substitute = self.original_face_part
+    def do_replace_face(self, substitute):
         for first in self.changed_characters:
             if first in self.meta_characters:
                 character = self.meta_characters[first]
@@ -108,6 +108,11 @@ class FaceOff:
                 substitute = characters.simple_text_replace(substitute, first, new_name)
             if first == "Natsume":
                 substitute = lowercase_end_of_words(substitute)
+        return substitute
+    def do_other_replace(self, substitute):
+        # replace unfound special_names
+        for special_name in self.special_names:
+            substitute = characters.simple_text_replace(substitute, special_name, hidden_str)
         return substitute
 
     def puzzle_to_imgfile(self, puzzle, font, file_path, lang="English"):
@@ -166,9 +171,11 @@ class FaceOff:
             return False
         self.find_avatars()
         print("ID: ", str(self.id))
-        result = self.do_replace_face()
+        result = self.do_replace_face(self.original_face_part)
+        result = self.do_other_replace(result)
         if self.debug_mode:
             res = highlight_keywords_all(result, self.changed_characters.values())
+            res = highlight_keywords_all(result, self.special_names)
             res = highlight_keywords_all(res, self.changed_characters.keys())
             print(res)
         self.write_out(result, self.changed_characters)
@@ -184,7 +191,7 @@ def lowercase_end_of_words(text):
 def text_to_image(text, font_path, font_size, image_width, margin):
     # Load a font
     font = ImageFont.truetype(font_path, font_size)
-    line_spacing = 1.5
+    line_spacing = 1
     # Create a drawing context to measure text size
     draw = ImageDraw.Draw(Image.new('RGB', (1, 1)))
 
@@ -234,9 +241,10 @@ def choose_piece(body, total):
                 continue
             sum += len(strings[i])
             if sum > total:
-                end_index = i
+                end_index = i-1
                 not_filled = False
                 break  
+            
     return combine_piece(strings, start_index, end_index)
 
 def print_highlight_keywords(text, keyword_list):

@@ -39,16 +39,16 @@ class Character:
     def exist_in_text(self, body):
         for key in character_keys:
             name = self.get_name(key)
-            if re.search(r'\b' + re.escape(name) + r'\b', body):
-                return True
             if re.search(r'\b' + re.escape(name+"'s") + r'\b', body):
+                return True
+            if re.search(r'\b' + re.escape(name) + r'\b', body):
                 return True
             if re.search(r'\b' + re.escape(name.lower()) + r'\b', body):
                 return True
         for alien in self.alias:
-            if re.search(r'\b' + re.escape(alien) + r'\b', body):
-                return True
             if re.search(r'\b' + re.escape(alien)+"'s" + r'\b', body):
+                return True
+            if re.search(r'\b' + re.escape(alien) + r'\b', body):
                 return True
             if re.search(r'\b' + re.escape(alien.lower()) + r'\b', body):
                 return True
@@ -70,7 +70,7 @@ class Character:
 def replace_all_possible_name(replaced_name, new_name, body):
     base = [replaced_name, replaced_name.lower(), replaced_name.upper()]
     for old_name in base:
-        pattern = r'\b' + re.escape(old_name) + r'\b'
+        pattern = r'\b(\w+-)?' + re.escape(old_name) + r'(-\w+[?!.~]*)?\b'
         body = re.sub(pattern, new_name, body)
         pattern = r'\b' + re.escape(old_name+"'s") + r'\b'
         body = re.sub(pattern, new_name+"'s", body)
@@ -78,7 +78,9 @@ def replace_all_possible_name(replaced_name, new_name, body):
         body = re.sub(pattern, new_name+"'s", body)
         pattern = r'\b\.*' + re.escape(old_name) + r'\.*\b'
         body = re.sub(pattern, new_name+"'s", body)
-        pattern = r'\b(\w+-)?' + re.escape(old_name) + r'(-\w+[?!.~]*)?\b'
+        pattern = r'\b\.*' + re.escape(old_name+"~") + r'\.*\b'
+        body = re.sub(pattern, new_name+"~", body)
+        pattern = r'\b' + re.escape(old_name) + r'\b'
         body = re.sub(pattern, new_name, body)
     return body
 

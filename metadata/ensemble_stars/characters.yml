@@ -103,6 +103,7 @@
   alias:
   - Shinkai - kun
   - Kanacchi
+  - Kana - chan
 # ALKALOID
 -
   full: Amagi Hiiro
@@ -113,6 +114,7 @@
   - Hiiro - kun
   - Hiro - kun
   - Hii - kun
+  - Hiro
 -
   full: Shiratori Aira
   full_revert: Aira Shiratori
@@ -196,11 +198,15 @@
   full_revert: Hinata Aoi
   first: Hinata
   last: Aoi
+  alias:
+  - Aniki
 - 
   full: Aoi Yuta
   full_revert: Yuta Aoi
   first: Yuta
   last: Aoi
+  alias:
+  - Yuuta
 # Crazy:B
 -
   full: Amagi Rinne
