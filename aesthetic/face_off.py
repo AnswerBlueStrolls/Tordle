@@ -3,8 +3,8 @@ from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
 import utils.string_functions as str_func
 import utils.image as img_func
-bad_alias = ["Miss", "Amber", "Mr", "Mary"]
-hidden_str = "(HIDDEN_INFO)"
+bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica"]
+hidden_str = "HIDDEN_INFO"
 class FaceOff:
     id = 0
     original_body = ""
@@ -158,12 +158,14 @@ class FaceOff:
         with open(os.path.join(puzzle_dir, puzzle_file_name), 'w') as file:
             file.write(puzzle)
             print("Puzzle generated.")
-            print("Start translator, DO NOT use mouse or keyboard!!!")
-            tranlated_puzzle = trans.translate_with_deepl(puzzle)
-            print("Puzzle translated.")
             enfont = os.path.join(self.base_path, "font_en.ttf")
             en_img_path = os.path.join(puzzle_dir, image_file_name)
             self.puzzle_to_imgfile(puzzle, enfont, en_img_path)
+
+            print("Start translator, DO NOT use mouse or keyboard!!!")
+            puzzle = characters.simple_text_replace(puzzle, hidden_str, "["+hidden_str+"]")
+            tranlated_puzzle = trans.translate_with_deepl(puzzle)
+            print("Puzzle translated.")
             cnfont = os.path.join(self.base_path, "font_cn.ttf")
             cn_img_path = os.path.join(puzzle_dir, image_file_name.replace("en.png", "cn.png"))
             self.puzzle_to_imgfile(tranlated_puzzle, cnfont, cn_img_path, lang="Chinese")

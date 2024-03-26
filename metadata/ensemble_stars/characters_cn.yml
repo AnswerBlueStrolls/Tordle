@@ -1,90 +1,79 @@
 # P
 -
-  full: Anzu
-  first: Anzu
-  last: Anzu
-  full_revert: Anzu
+  full: 小杏
+  first: 杏
+  last: 杏
+  full_revert: 小杏
   alias:
-  - Ann
-  - Anzu - chan
-  - Ann - chan
+  - 制作人
+  - 小姑娘
+
 -
-  full: Sagami Jin
-  full_revert: Jin Sagami
-  first: Jin
-  last: Sagami
--
-  full: Kunugi Akiomi
-  full_revert: Akinomi Kunugi
-  first: Akinomi
-  last: Kunugi
--
-  full: Tojo Kaname
-  full_revert: Kaname Tojo
-  first: Kaname
-  last: Tojo
+  full: 十条要
+  full_revert: 十条要
+  first: 要
+  last: 十条
 
 # STARMAKER PRODUCTION
 # fine
 -
-  full: Tenshouin Eichi
-  full_revert: Eichi Tenshouin
-  first: Eichi
-  last: Tenshouin
+  full: 天祥院英智
+  full_revert: 天祥院英智
+  first: 英智
+  last: 天祥院
 - 
-  full: Hibiki Wataru
-  full_revert: Wataru Hibiki
-  first: Wataru
-  last: Hibiki
+  full: 日日树涉
+  full_revert: 日日树涉
+  first: 涉
+  last: 日日树
   alias:
-  - Shisho
+  - 师父
 -
-  full: Himemiya Tori
-  full_revert: Tori Himemiya
-  first: Tori
-  last: Himemiya
+  full: 姬宫桃李
+  full_revert: 姬宫桃李
+  first: 桃李
+  last: 姬宫
+
 -
-  full: Fushimi Yuzuru
-  full_revert: Yuzuru Fushimi
-  first: Yuzuru
-  last: Fushimi
+  full: 伏见弓弦
+  full_revert: 伏见弓弦
+  first: 弓弦
+  last: 伏见
 # Trickstar
 -
-  full: Hidaka Hokuto
-  full_revert: Hokuto Hidaka
-  first: Hokuto
-  last: Hidaka
+  full: 冰鹰北斗
+  full_revert: 冰鹰北斗
+  first: 北斗
+  last: 冰鹰
 -
-  full: Akehoshi Subaru
-  full_revert: Subaru Akehoshi
-  first: Subaru
-  last: Akehoshi
+  full: 明星昴流
+  full_revert: 明星昴流
+  first: 昴流
+  last: 明星
 -
-  full: Yuuki Makoto
-  full_revert: Makoto Yuuki
-  first: Makoto
-  last: Yuuki
+  full: 游木真
+  full_revert: 游木真
+  first: 真
+  last: 游木
   alias:
-  - Yuu - kun
+  - 游君
 -
-  full: Isara Mao
-  first: Mao
-  last: Isara
-  full_revert: Mao Isara
-  alias:
-  - Mao - chan
-  - Maa - kun
+  full: 衣更真绪
+  first: 真绪
+  last: 衣更
+  full_revert: 衣更真绪
+
 # 流星队
 -
-  full: Nagumo Tetora
-  first: Tetora
-  last: Nagumo
-  full_revert: Tetora Nagumo
+  full: 南云铁虎
+  first: 铁虎
+  last: 南云
+  tag: Nagumo Tetora
 -
-  full: Takamine Midori
-  full_revert: Midori Takamine
-  first: Midori
-  last: Takamine
+  tag: Takamine Midori
+  full_revert: 高峯翠
+  first: 翠
+  last: 高峯
 
 -
   full: Sengoku Shinobu
@@ -108,7 +97,7 @@
   - Kana - chan
 # ALKALOID
 -
-  full: Amagi Hiiro
+  full: 天城一彩
   full_revert: Hiiro Amagi
   first: Hiiro
   last: Amagi

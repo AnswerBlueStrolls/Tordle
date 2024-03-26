@@ -31,10 +31,7 @@ class AODatabase:
         return id, body
 
     def get_fic_by_id(self, id):
-        if self.language == "":
-            sql = "SELECT * FROM {} WHERE work_id = {} LIMIT 1".format(self.table_name, id)
-        else:
-            sql = "SELECT * FROM {} WHERE language LIKE %{}% AND work_id = {} LIMIT 1".format(self.table_name, language_map[self.language], id)
+        sql = "SELECT * FROM {} WHERE work_id = {} LIMIT 1".format(self.table_name, id)
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
         crsr.execute(sql)

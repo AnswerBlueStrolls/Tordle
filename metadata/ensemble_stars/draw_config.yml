@@ -1,0 +1,6 @@
+db_name: ao3.db
+table_name: fanfics_raw
+fanfic_index: 21
+limit: 5300
+debug: false
+language: English
