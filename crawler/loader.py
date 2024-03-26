@@ -4,7 +4,7 @@ class Loader:
     config = {}
     debug_mode = False
     base_path = ""
-    lang = "English"
+    lang = ""
     db = None
     output_dir = ""
     def __init__(self, config_file):

@@ -143,8 +143,17 @@ def access_denied(soup):
 	if (not soup.find(class_="work meta group")):
 		return True
 	return False
-
-def get_fic_from_ao3(fic_id, output, lang="English"):
+def is_target_lang(aolang, lang):
+	zh_alias = "Zhong Wen"
+	if lang == "":
+		return True
+	if lang == "English" and aolang == "English":
+		return True
+	if lang == "Chinese" and zh_alias in aolang:
+		return True
+	return False
+	
+def get_fic_from_ao3(fic_id, output, lang=""):
 	'''
 	fic_id is the AO3 ID of a fic, found every URL /works/[id].
 	writer is a csv writer object
@@ -189,8 +198,8 @@ def get_fic_from_ao3(fic_id, output, lang="English"):
 		hidden_kudos = get_kudos(soup.find('span', class_='kudos_expanded hidden'))
 		all_kudos = visible_kudos + hidden_kudos
 
-		if lang != stats[0]:
-			print('Fic is not in ' + lang + ', skipping...')
+		if lang == "English" and stats[0] != "English":
+			print("Fic is {} not {}, skipping...".format(stats[0], lang))
 			return 0
 		else:
 			all_bookmarks = []
