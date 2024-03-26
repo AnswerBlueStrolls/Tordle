@@ -1,5 +1,5 @@
 pandas
 spacy
 faker
-ao3scraper
 selenium
+pillow
