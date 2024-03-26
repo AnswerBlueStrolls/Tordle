@@ -197,7 +197,7 @@ def get_fic_from_ao3(fic_id, output, lang="English"):
 			#get the fic itself
 			content = soup.find("div", id= "chapters")
 			chapters = content.select('p')
-			chaptertext = '\n\n'.join([unidecode(chapter.text) for chapter in chapters])
+			chaptertext = '\n\n'.join([chapter.text for chapter in chapters])
 			
 			row = [fic_id] + [title] + [author] + list(map(lambda x: ', '.join(x), tags)) + stats + [all_kudos] + [all_bookmarks] + [chaptertext]
 			try:

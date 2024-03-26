@@ -1,6 +1,6 @@
 from utils.characters import replace_all_possible_name, the_same_name
 from utils.image import find_sensitive_words_index
-import os
+
 
 def test_replace_all_possible_name():
     result = replace_all_possible_name("Eichi", "Allen", "E-Eichi-san please fuck Eichi.")
@@ -13,4 +13,3 @@ def test_find_sensitive_words_index():
 def test_the_same_name():
     result = the_same_name("Kohaku", "Kohaku-san")
     assert result == "Kohaku"
-

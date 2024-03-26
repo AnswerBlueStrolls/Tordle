@@ -22,18 +22,23 @@ class Loader:
         self.db = database.AODatabase()
         self.db.init_from_config(self.config)
         
-    
-    def load_one_fic(self, id):
-        if len(self.db.get_fic_by_id(id)) > 0:
-            print("Fanfic already exist, skip ...")
-            return False
+    def load_to_file(self, id):
         output_path = os.path.join(self.output_dir, "{}.csv".format(str(id)))
         with open(output_path, 'w', newline='') as csvfile:
             length = ao3.get_fic_from_ao3(id, csvfile, self.lang)
             if length > 0:
                 csvfile.close()
-                self.db.load_csv(output_path)
-        os.remove(output_path)
+                return output_path
+            else:
+                return ""
+    def load_one_fic(self, id):
+        if len(self.db.get_fic_by_id(id)) > 0:
+            print("Fanfic already exist, skip ...")
+            return False
+        csvfile =  self.load_to_file(id)
+        if csvfile != "":
+            self.db.load_csv(csvfile)
+        os.remove(csvfile)
         return True
     
     def load_batch_fics(self, limit):

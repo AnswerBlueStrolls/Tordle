@@ -25,14 +25,12 @@ class AODatabase:
         return id, body
 
     def get_fic_by_id(self, id):
-        print("Find if id exist", id)
         sql = "SELECT * FROM {} WHERE language = '{}' AND work_id = {} ORDER BY RANDOM() LIMIT 1".format(self.table_name, self.language, id)
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
         crsr.execute(sql)
         result = crsr.fetchall()
         if len(result) == 0:
-            print(id, "not exist")
             conn.close()
             return ""
         id = result[0][0]
