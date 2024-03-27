@@ -3,7 +3,7 @@
   full: 小杏
   first: 杏
   last: 杏
-  full_revert: 小杏
+  tag: Anzu
   alias:
   - 制作人
   - 小姑娘
@@ -18,41 +18,41 @@
 # fine
 -
   full: 天祥院英智
-  full_revert: 天祥院英智
+  tag: Tenshouin Eichi
   first: 英智
   last: 天祥院
 - 
   full: 日日树涉
-  full_revert: 日日树涉
+  tag: Hibiki Wataru
   first: 涉
   last: 日日树
   alias:
   - 师父
 -
   full: 姬宫桃李
-  full_revert: 姬宫桃李
+  tag: Himemiya Tori
   first: 桃李
   last: 姬宫
 
 -
   full: 伏见弓弦
-  full_revert: 伏见弓弦
+  tag: Fushimi Yuzuru
   first: 弓弦
   last: 伏见
 # Trickstar
 -
   full: 冰鹰北斗
-  full_revert: 冰鹰北斗
+  tag: Hidaka Hokuto
   first: 北斗
   last: 冰鹰
 -
   full: 明星昴流
-  full_revert: 明星昴流
+  tag: Akehoshi Subaru
   first: 昴流
   last: 明星
 -
   full: 游木真
-  full_revert: 游木真
+  tag: Yuuki Makoto
   first: 真
   last: 游木
   alias:
@@ -61,7 +61,7 @@
   full: 衣更真绪
   first: 真绪
   last: 衣更
-  full_revert: 衣更真绪
+  tag: Isara Mao
 
 # 流星队
 -
@@ -76,29 +76,26 @@
   last: 高峯
 
 -
-  full: Sengoku Shinobu
-  full_revert: Shinobu Sengoku
-  first: Shinobu
-  last: Sengoku
+  full: 仙石忍
+  tag: Sengoku Shinobu
+  first: 忍
+  last: 仙石
 
 -
-  full: Morisawa Chiaki
-  full_revert: Chiaki Morisawa
-  first: Chiaki
-  last: Morisawa
+  full: 守泽千秋
+  full_revert: Morisawa Chiaki
+  first: 千秋
+  last: 守泽
 -
-  full: Shinkai Kanata
-  full_revert: Kanata Shinkai
-  first: Kanata
-  last: Shinkai
-  alias:
-  - Shinkai - kun
-  - Kanacchi
-  - Kana - chan
+  full: 深海奏汰
+  tag: Shinkai Kanata
+  first: 奏汰
+  last: 深海
+
 # ALKALOID
 -
   full: 天城一彩
-  full_revert: Hiiro Amagi
+  tag: Amagi Hiiro
   first: Hiiro
   last: Amagi
   alias:
