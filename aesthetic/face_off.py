@@ -5,6 +5,7 @@ import utils.string_functions as str_func
 import utils.image as img_func
 bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica"]
 hidden_str = "HIDDEN_INFO"
+hidden_color = "HIDDEN_COLOR"
 class FaceOff:
     id = 0
     original_body = ""
@@ -118,6 +119,7 @@ class FaceOff:
         # replace unfound special_names
         for special_name in self.special_names:
             substitute = characters.simple_text_replace(substitute, special_name, hidden_str)
+        substitute = characters.replace_facial_features(substitute, hidden_color)
         return substitute
 
     def puzzle_to_imgfile(self, puzzle, font, file_path, lang="English"):
@@ -164,6 +166,7 @@ class FaceOff:
 
             print("Start translator, DO NOT use mouse or keyboard!!!")
             puzzle = puzzle.replace(hidden_str, f"[{hidden_str}]")
+            puzzle = puzzle.replace(hidden_color, f"[{hidden_color}]")
             tranlated_puzzle = trans.translate_with_deepl(puzzle)
             print("Puzzle translated.")
             cnfont = os.path.join(self.base_path, "font_cn.ttf")

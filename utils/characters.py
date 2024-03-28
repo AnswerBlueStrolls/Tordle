@@ -113,6 +113,14 @@ def simple_text_replace(body, replaced_name, new_name):
         body = re.sub(pattern, new_name, body)
     return body
 
+def replace_facial_features(body, color_hidden_str):
+    colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "brown", "black", "white", "gray", "silver", "gold"]
+    for color in colors:
+        body = body.replace(color + " eyes", color_hidden_str+" eyes")
+        body = body.replace(color + " hair", color_hidden_str+" hair")
+        body = body.replace(color + "-haired", color_hidden_str+"-haired")
+    body = body.replace("sharp teeth", "teeth")
+    return body
 
 nlp_lang_dict = {"English": "en_core_web_sm", "Chinese": "zh_core_web_sm"}
 def find_characters_nlp(text, language):

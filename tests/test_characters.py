@@ -1,4 +1,4 @@
-from utils.characters import replace_all_possible_name, the_same_name
+from utils.characters import replace_all_possible_name, the_same_name, replace_facial_features
 from utils.image import find_sensitive_words_index
 
 
@@ -13,3 +13,11 @@ def test_find_sensitive_words_index():
 def test_the_same_name():
     result = the_same_name("Kohaku", "Kohaku-san")
     assert result == "Kohaku"
+
+def testreplace_facial_features():
+    body = "showing off his sharp teeth with his wide grin"
+    result = replace_facial_features(body, "")
+    assert result == "showing off his teeth with his wide grin"
+    body = "The blue-haired man fixes himself"
+    result = replace_facial_features(body, "abc")
+    assert result == "The abc-haired man fixes himself"
