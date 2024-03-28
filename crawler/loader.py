@@ -1,5 +1,5 @@
 import utils.db_connection as database, utils.ao3 as ao3
-import yaml, os, csv
+import yaml, os, csv, chardet
 class Loader:
     config = {}
     debug_mode = False
@@ -38,18 +38,29 @@ class Loader:
         csvfile =  self.load_to_file(id)
         if csvfile != "":
             self.db.load_csv(csvfile)
-        os.remove(csvfile)
+        try:
+            os.remove(csvfile)
+        except OSError as e:
+            print(f"Error: {e}")
         return True
     
     def load_batch_fics(self, limit):
         batch_dir = os.path.join(self.base_path, "loader")
         loaded_count = 0
         for file_name in os.listdir(batch_dir):
+            if file_name.startswith('.'):
+                continue
             if loaded_count > limit:
                 print("Reach limit, finish loading.")
                 return
             full_file_name = os.path.join(batch_dir, file_name)
-            with open(full_file_name, 'r') as csvfile:
+            enc = 'utf-8'
+            with open(full_file_name, 'rb') as file:
+                raw_data = file.read()
+                result = chardet.detect(raw_data)
+                enc = result['encoding']
+            print(f"handle {full_file_name} with encoding {enc}")
+            with open(full_file_name, 'r', encoding=enc) as csvfile:
                 csv_reader = csv.reader(csvfile)
                 for row in csv_reader:
                     res = self.load_one_fic(row[0])

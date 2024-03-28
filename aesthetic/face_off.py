@@ -163,7 +163,7 @@ class FaceOff:
             self.puzzle_to_imgfile(puzzle, enfont, en_img_path)
 
             print("Start translator, DO NOT use mouse or keyboard!!!")
-            puzzle = characters.simple_text_replace(puzzle, hidden_str, "["+hidden_str+"]")
+            puzzle = puzzle.replace(hidden_str, f"[{hidden_str}]")
             tranlated_puzzle = trans.translate_with_deepl(puzzle)
             print("Puzzle translated.")
             cnfont = os.path.join(self.base_path, "font_cn.ttf")
