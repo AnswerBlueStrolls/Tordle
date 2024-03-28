@@ -96,13 +96,9 @@
 -
   full: 天城一彩
   tag: Amagi Hiiro
-  first: Hiiro
-  last: Amagi
-  alias:
-  - Hiiro - kun
-  - Hiro - kun
-  - Hii - kun
-  - Hiro
+  first: 一彩
+  last: 天城
+
 -
   full: Shiratori Aira
   full_revert: Aira Shiratori
