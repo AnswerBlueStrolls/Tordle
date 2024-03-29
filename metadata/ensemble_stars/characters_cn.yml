@@ -100,40 +100,32 @@
   last: 天城
 
 -
-  full: Shiratori Aira
-  tag: Aira Shiratori
-  first: Aira
-  last: Shiratori
+  full: 白鸟蓝良
+  tag: Shiratori Aira
+  first: 蓝良
+  last: 白鸟
   alias:
-  - Love - han
-  - Rabu
+  - Loveはん
 
 -
-  full: Ayase Mayoi
-  tag: Mayoi Ayase
-  first: Mayoi
-  last: Ayase
-  alias:
-  - Mayoi - san
-  - Mayoi - chan
-  - Mayoi - han
+  full: 礼濑真宵
+  tag: Ayase Mayoi
+  first: 真宵
+  last: 礼濑
 -
-  full: Kazehaya Tatsumi
-  tag: Tatsumi Kazehaya
-  first: Tatsumi
-  last: Kazehaya
-  alias:
-  - Tatsumi - san
+  full: 风早巽
+  tag: Kazehaya Tatsumi
+  first: 巽
+  last: 风早
 
 # COSMIC PRODUCTION
 # Eden
 -
-  full: Ran Nagisa
-  tag: Nagisa Ran
-  first: Nagisa
-  last: Ran
-  alias:
-  - Nagisa - Sama
+  full: 乱凪砂
+  tag: Ran Nagisa
+  first: 凪砂
+  last: 乱
+
 -
   full: Tomoe Hiyori
   tag: Hiyori Tomoe
@@ -170,12 +162,10 @@
   - Oshi - san~
 
 -
-  full: Kagehira Mika
-  first: Mika
-  last: Kagehira
-  tag: Mika Kagehira
-  alias:
-  - Mikarin
+  full: 影片美伽
+  first: 美伽
+  last: 影片
+  tag: Kagehira Mika
 
 # 2wink
 -
@@ -252,10 +242,10 @@
   - Wan - chan
   - Oogami
 -
-  full: Otogari Adonis
-  first: Adonis
-  last: Otogari
-  tag: Adonis Otogari
+  full: 乙狩阿多尼斯
+  first: 阿多尼斯
+  last: 乙狩
+  tag: Otogari Adonis
 # Ra*bits
 -
   full: Mashiro Tomoya
@@ -273,80 +263,76 @@
   first: Mitsuru
   last: Tenma
 -
-  full: Shino Hajime
-  tag: Hajime Shino
-  first: Hajime
-  last: Shino
+  full: 紫之创
+  tag: Shino Hajime
+  first: 创
+  last: 紫之
 
 # 红月
 -
-  full: Hasumi Keito
-  first: Keito
-  last: Hasumi
-  tag: Keito Hasumi
-  alias:
-  - Hasumi - senpai
-  - Hasumi - kun
-  - Keito~
+  full: 莲巳敬人
+  first: 敬人
+  last: 莲巳
+  tag: Hasumi Keito
+
 -
   full: 鬼龙红郎
   first: 红郎
   last: 鬼龙
   tag: Kiryu Kuro
 -
-  full: Kanzaki Souma
-  first: Souma
-  last: Kanzaki
-  tag: Souma Kanzaki
+  full: 神崎飒马
+  first: 飒马
+  last: 神崎
+  tag: Kanzaki Souma
 # NewDi
 # Knights
 - 
-  full: Suou Tsukasa
-  first: Tsukasa
-  last: Suou
-  tag: Tsukasa Suou
-  alias:
-  - Suo
+  full: 朱樱司
+  first: 司
+  last: 朱樱
+  tag: Suou Tsukasa
+
 -
-  full: Tsukinaga Leo
-  first: Leo
-  last: Tsukinaga
-  tag: Leo Tsukinaga
+  full: 月永雷欧
+  first: 雷欧
+  last: 月永
+  tag: Tsukinaga Leo
 -
-  full: Sena Izumi
-  tag: Izumi Sena
-  first: Izumi
-  last: Sena
+  full: 濑名泉
+  tag: Sena Izumi
+  first: 泉
+  last: 濑名
 -
-  full: Sakuma Riitsu
-  first: Riitsu
-  last: Sakuma
-  tag: Riitsu Sakuma
+  full: 朔间凛月
+  first: 凛月
+  last: 朔间
+  tag: Sakuma Riitsu
   alias:
   - Ritsu
 -
-  full: Narukami Arashi
-  first: Arashi
-  last: Narukami
-  tag: Arashi Narukami
+  full: 鸣上岚
+  first: 岚
+  last: 鸣上
+  tag: Narukami Arashi
   alias:
-  - Naru
+  - 小鸣
 # Switch
 -
-  full: Sakasaki Natsume
-  tag: Natsume Sakasaki
-  last: Sakasaki
-  first: Natsume
+  full: 逆先夏目
+  tag: Sakasaki Natsume
+  last: 逆先
+  first: 夏目
 -
-  full: Aoba Tsumugi
-  first: Aoba
-  last: Tsumugi
-  tag: Tsumugi Aoba
+  full: 青叶纺
+  first: 纺
+  last: 青叶
+  tag: Aoba Tsumugi
 -
-  full: Harukawa Sora
-  first: Sora
-  last: Harukawa
-  tag: Sora Harukawa
+  full: 春川宙
+  first: 宙
+  last: 春川
+  tag: Harukawa Sora
 # MaM
 -
   full: 三毛缟斑
