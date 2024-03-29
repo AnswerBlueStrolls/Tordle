@@ -3,7 +3,7 @@ from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
 import utils.string_functions as str_func
 import utils.image as img_func
-bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica"]
+bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica", "Jesus"]
 hidden_str = "HIDDEN_INFO"
 hidden_color = "HIDDEN_COLOR"
 class FaceOff:

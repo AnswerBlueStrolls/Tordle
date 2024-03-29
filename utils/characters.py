@@ -119,6 +119,7 @@ def replace_facial_features(body, color_hidden_str):
         body = body.replace(color + " eyes", color_hidden_str+" eyes")
         body = body.replace(color + " hair", color_hidden_str+" hair")
         body = body.replace(color + "-haired", color_hidden_str+"-haired")
+        body = body.replace(color + "head", color_hidden_str+"head")
     body = body.replace("sharp teeth", "teeth")
     return body
 
