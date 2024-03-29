@@ -6,6 +6,7 @@ class Character:
     last = ""
     full = ""
     full_revert = ""
+    tag = ""
     alias = []
     def __init__(self, dictionary):
         for key, value in dictionary.items():
@@ -20,7 +21,10 @@ class Character:
             case 'full':   
                 return self.full
             case 'full_revert':
-                return self.full_revert
+                if self.full_revert != None and len(self.full_revert) > 0:
+                    return self.full_revert
+                else:
+                    return ""
         return ""
     def print(self):
         template = "Idol: {} {}. Nick names: {}".format(self.first, self.last, self.alias)
@@ -131,15 +135,21 @@ def find_characters_nlp(text, language):
     doc = nlp(text)
     person_names = []
     current_person = ""
-    for token in doc:
-        if token.ent_type_ == "PERSON":
-            current_person += token.text + " "
-        elif current_person:
-            person_names.append(current_person.strip()) 
-            current_person = ""
-    if current_person:
-        person_names.append(current_person.strip())
-    return list(set(person_names))
+    if language == "English":
+        for token in doc:
+            if token.ent_type_ == "PERSON":
+                current_person += token.text + " "
+            elif current_person:
+                person_names.append(current_person.strip()) 
+                current_person = ""
+        if current_person:
+            person_names.append(current_person.strip())
+        return list(set(person_names))
+    if language == "Chinese":
+        for entity in doc.ents:
+            if entity.label_ == "PERSON":
+                print(entity.text)
+        return list(set(person_names))
 
 '''
 find out if the two names are the same

@@ -19,7 +19,9 @@ class FaceOff:
     debug_mode = False
     base_path = ""
 
-    def __init__(self, config_file, id):
+    def __init__(self, config_file, id = 0):
+        if config_file == "":
+            return
         self.base_path = os.path.dirname(config_file)
         self.config = yaml.safe_load(open(config_file))
         self.config["db_name"] = os.path.join(self.base_path, self.config["db_name"])
@@ -32,16 +34,20 @@ class FaceOff:
             self.original_body = db.get_fic_by_id(id)
         else:
             self.id, self.original_body = db.get_one_fic_randomly()
-        self.meta_characters = characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml"))
+        self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml")))
         self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
         self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names.yml"))
 
     def choose_face_part(self):
         half = math.floor(len(self.original_body)/2)
-        total = self.config["limit"]
+        total = self.config.get("limit")
+        if total is None:
+             print("No limit set, use full text")
+             self.set_original_face_part(self.original_body)
+             return
         if half < total:
             total = half
-        self.original_face_part = str_func.choose_piece(self.original_body, total)
+        self.set_original_face_part(str_func.choose_piece(self.original_body, total))
     
     def mapping_meta_character(self, in_name):
         for first in self.meta_characters.keys():
@@ -55,7 +61,9 @@ class FaceOff:
         if lang is None:
             lang = "English"
         #try nlp first
+        print("text length is", len(self.original_face_part))
         nlp_characters = characters.find_characters_nlp(self.original_face_part, lang)
+        print("Found {} characters".format(len(nlp_characters)))
         for nlp_name in nlp_characters:
             if nlp_name in self.exceptions:
                 continue
@@ -173,16 +181,27 @@ class FaceOff:
             cn_img_path = os.path.join(puzzle_dir, image_file_name.replace("en.png", "cn.png"))
             self.puzzle_to_imgfile(tranlated_puzzle, cnfont, cn_img_path, lang="Chinese")
 
+    def set_meta_characters(self, characters):
+        self.meta_characters = characters
+    def set_original_face_part(self, body):
+        self.original_face_part = body
+    def set_language(self, language):
+        self.config["language"] = language
 
-    def face_off(self):
-        self.choose_face_part()
+    def do_face_off(self):
         self.find_characters()
         if len(self.changed_characters) == 0:
-            return False
+            print("Cannot find any characters")
+            return ""
         self.find_avatars()
-        print("ID: ", str(self.id))
         result = self.do_replace_face(self.original_face_part)
         result = self.do_other_replace(result)
+        return result
+
+    def face_off(self):
+        print("ID: ", str(self.id))
+        self.choose_face_part()
+        result = self.do_face_off()
         if self.debug_mode:
             res = str_func.highlight_keywords_all(result, self.changed_characters.values())
             res = str_func.highlight_keywords_all(result, self.special_names)

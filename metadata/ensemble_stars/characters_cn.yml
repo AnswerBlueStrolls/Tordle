@@ -10,7 +10,7 @@
 
 -
   full: 十条要
-  full_revert: 十条要
+  tag: 十条要
   first: 要
   last: 十条
 
@@ -71,7 +71,7 @@
   tag: Nagumo Tetora
 -
   tag: Takamine Midori
-  full_revert: 高峯翠
+  tag: 高峯翠
   first: 翠
   last: 高峯
 
@@ -83,7 +83,7 @@
 
 -
   full: 守泽千秋
-  full_revert: Morisawa Chiaki
+  tag: Morisawa Chiaki
   first: 千秋
   last: 守泽
 -
@@ -101,7 +101,7 @@
 
 -
   full: Shiratori Aira
-  full_revert: Aira Shiratori
+  tag: Aira Shiratori
   first: Aira
   last: Shiratori
   alias:
@@ -110,7 +110,7 @@
 
 -
   full: Ayase Mayoi
-  full_revert: Mayoi Ayase
+  tag: Mayoi Ayase
   first: Mayoi
   last: Ayase
   alias:
@@ -119,7 +119,7 @@
   - Mayoi - han
 -
   full: Kazehaya Tatsumi
-  full_revert: Tatsumi Kazehaya
+  tag: Tatsumi Kazehaya
   first: Tatsumi
   last: Kazehaya
   alias:
@@ -129,14 +129,14 @@
 # Eden
 -
   full: Ran Nagisa
-  full_revert: Nagisa Ran
+  tag: Nagisa Ran
   first: Nagisa
   last: Ran
   alias:
   - Nagisa - Sama
 -
   full: Tomoe Hiyori
-  full_revert: Hiyori Tomoe
+  tag: Hiyori Tomoe
   first: Hiyori
   last: Tomoe
   alias:
@@ -145,12 +145,12 @@
 
 -
   full: Saegusa Ibara
-  full_revert: Ibara Saegusa
+  tag: Ibara Saegusa
   first: Ibara
   last: Saegusa
 -
   full: Sazanami Jun
-  full_revert: Jun Sazanami
+  tag: Jun Sazanami
   first: Jun
   last: Sazanami
   alias:
@@ -161,7 +161,7 @@
   full: Itsuki Shu
   first: Shu
   last: Itsuki
-  full_revert: Shu Itsuki
+  tag: Shu Itsuki
   alias:
   - Oshi - san
   - Shu - kun
@@ -173,39 +173,37 @@
   full: Kagehira Mika
   first: Mika
   last: Kagehira
-  full_revert: Mika Kagehira
+  tag: Mika Kagehira
   alias:
   - Mikarin
 
 # 2wink
 -
   full: Aoi Hinata
-  full_revert: Hinata Aoi
+  tag: Hinata Aoi
   first: Hinata
   last: Aoi
   alias:
   - Aniki
 - 
   full: Aoi Yuta
-  full_revert: Yuta Aoi
+  tag: Yuta Aoi
   first: Yuta
   last: Aoi
   alias:
   - Yuuta
 # Crazy:B
 -
-  full: Amagi Rinne
-  first: Rinne
-  last: Amagi
-  full_revert: Rinne Amagi
-  alias:
-  - Rinne - kun
-  - Amagi - kun
+  full: 天城燐音
+  first: 燐音
+  last: 天城
+  tag: Amagi Rinne
+
 -
   full: HiMERU
   first: HiMERU
   last: HiMERU
-  full_revert: HiMERU
+  tag: HiMERU
   alias:
   - HiMERU - han
   - MERU
@@ -213,35 +211,35 @@
   - Merumeru
   - Merumeru~
 -
-  full: Oukawa Kohaku
-  first: Kohaku
-  last: Oukawa
-  full_revert: Kohaku Oukawa
+  full: 樱河琥珀
+  first: 琥珀
+  last: 樱河
+  tag: Oukawa Kohaku
   alias:
-  - Kohaku - san
-  - Kohaku - chan
-  - Sakura - kun
+  - 琥珀さん
+  - 琥珀亲
+  - 小琥珀
+  - 琥珀酱
 -
-  full: Shiina Niki
-  first: Niki
-  last: Shiina
-  full_revert: Niki Shiina
-  alias:
-  - Shiina - san
+  full: 椎名丹希
+  first: 丹希
+  last: 椎名
+  tag: Shiina Niki
+
 # Rythm Link
 # Undead
 -
   full: Sakuma Rei
   first: Rei
   last: Sakuma
-  full_revert: Rei Sakama
+  tag: Rei Sakama
   alias:
   - Sakuma - san
 -
   full: Hakaze Kaoru
   first: Kaoru
   last: Hakaze
-  full_revert: Kaoru Hakaze
+  tag: Kaoru Hakaze
   alias:
   - Kaoru - kun
 
@@ -249,7 +247,7 @@
   full: Ogami Koga
   first: Koga
   last: Ogami
-  full_revert: Koga Ogami
+  tag: Koga Ogami
   alias:
   - Wan - chan
   - Oogami
@@ -257,26 +255,26 @@
   full: Otogari Adonis
   first: Adonis
   last: Otogari
-  full_revert: Adonis Otogari
+  tag: Adonis Otogari
 # Ra*bits
 -
   full: Mashiro Tomoya
   first: Tomoya
   last: Mashiro
-  full_revert: Tomoya Mashiro
+  tag: Tomoya Mashiro
 -
   full: Nito Nazuna
-  full_revert: Nazuna Nito
+  tag: Nazuna Nito
   first: Nazuna
   last: Nito
 - 
   full: Tenma Mitsuru
-  full_revert: Mitsuru Tenma
+  tag: Mitsuru Tenma
   first: Mitsuru
   last: Tenma
 -
   full: Shino Hajime
-  full_revert: Hajime Shino
+  tag: Hajime Shino
   first: Hajime
   last: Shino
 
@@ -285,75 +283,75 @@
   full: Hasumi Keito
   first: Keito
   last: Hasumi
-  full_revert: Keito Hasumi
+  tag: Keito Hasumi
   alias:
   - Hasumi - senpai
   - Hasumi - kun
   - Keito~
 -
-  full: Kiryu Kuro
-  first: Kuro
-  last: Kiryu
-  full_revert: Kuro Kiryu
+  full: 鬼龙红郎
+  first: 红郎
+  last: 鬼龙
+  tag: Kiryu Kuro
 -
   full: Kanzaki Souma
   first: Souma
   last: Kanzaki
-  full_revert: Souma Kanzaki
+  tag: Souma Kanzaki
 # NewDi
 # Knights
 - 
   full: Suou Tsukasa
   first: Tsukasa
   last: Suou
-  full_revert: Tsukasa Suou
+  tag: Tsukasa Suou
   alias:
   - Suo
 -
   full: Tsukinaga Leo
   first: Leo
   last: Tsukinaga
-  full_revert: Leo Tsukinaga
+  tag: Leo Tsukinaga
 -
   full: Sena Izumi
-  full_revert: Izumi Sena
+  tag: Izumi Sena
   first: Izumi
   last: Sena
 -
   full: Sakuma Riitsu
   first: Riitsu
   last: Sakuma
-  full_revert: Riitsu Sakuma
+  tag: Riitsu Sakuma
   alias:
   - Ritsu
 -
   full: Narukami Arashi
   first: Arashi
   last: Narukami
-  full_revert: Arashi Narukami
+  tag: Arashi Narukami
   alias:
   - Naru
 # Switch
 -
   full: Sakasaki Natsume
-  full_revert: Natsume Sakasaki
+  tag: Natsume Sakasaki
   last: Sakasaki
   first: Natsume
 -
   full: Aoba Tsumugi
   first: Aoba
   last: Tsumugi
-  full_revert: Tsumugi Aoba
+  tag: Tsumugi Aoba
 -
   full: Harukawa Sora
   first: Sora
   last: Harukawa
-  full_revert: Sora Harukawa
+  tag: Sora Harukawa
 # MaM
 -
-  full: Madara Mikejima
-  first: Madara
-  last: Mikejima
-  full_revert: Mikejima Madara
+  full: 三毛缟斑
+  first: 斑
+  last: 三毛缟
+  tag: Mikejima Madara
   alias:
-  - Madara - han
+  - 斑はん
