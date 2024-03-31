@@ -2,7 +2,7 @@ import aesthetic.face_off as face
 import sys, logging
 import argparse
 import crawler.loader as loader
-logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(message)s')
+logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s %(message)s')
 
 def lottery(config_name, id):
     result = False

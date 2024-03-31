@@ -46,8 +46,10 @@ class FaceOff:
              self.set_original_face_part(self.original_body)
              return
         if half < total:
-            total = half
-        self.set_original_face_part(str_func.choose_piece(self.original_body, total))
+            print("fic is too short, use the whole fic, length is", len(self.original_body))
+            self.original_face_part = self.original_body
+            return
+        self.original_face_part = str_func.choose_piece(self.original_body, total)
     
     def mapping_meta_character(self, in_name):
         for first in self.meta_characters.keys():

@@ -11,6 +11,20 @@ def find_sensitive_words_index(text):
             for i in range(index, index+len(keyword)):
                 indexes.append(i)
     return sorted(indexes)
+def remove_bottom_whitespace(img, margin):
+    width, height = img.size
+    bottom = height
+    data = list(img.getdata())
+    for y in range(height - 1, -1, -1):
+        total_sum = 0
+        for tup in data[y * width:(y + 1) * width]:
+            for num in tup:
+                total_sum += num
+        if total_sum != 255 * width * 3:
+            bottom = y + 1
+            break
+    img_cropped = img.crop((0, 0, width, bottom+margin))
+    return img_cropped
 
 def text_to_image(text, font_path, font_size, image_width, margin):
     # Load a font
@@ -35,7 +49,7 @@ def text_to_image(text, font_path, font_size, image_width, margin):
 
     # Calculate the position to center text vertically within margins
     y = margin + (text_height - lines * line_height) // 2
-
+    sensitive_count = 0
     for line in text.split('\n'):
         _, text_height = draw.textsize(line, font=font)
         words_index = find_sensitive_words_index(line)
@@ -43,7 +57,7 @@ def text_to_image(text, font_path, font_size, image_width, margin):
             x = margin
             draw.text((x, y), line, fill='black', font=font)
         else:
-            print("Found sensitive words!")
+            sensitive_count += len(words_index)
             start = 0
             x = margin
             for i in words_index:
@@ -59,8 +73,9 @@ def text_to_image(text, font_path, font_size, image_width, margin):
                     x += character_width
                     start += 1
         y += int(text_height * line_spacing)
-
-    return img
+    if sensitive_count > 0:
+        print("Found {} sensitive words!".format(sensitive_count))
+    return remove_bottom_whitespace(img, margin*3)
 
 
 
