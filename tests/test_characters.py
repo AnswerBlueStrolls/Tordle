@@ -38,8 +38,8 @@ def test_chinese():
     HanLP = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTRA_SMALL_ZH)
     ner = HanLP['ner/msra']
     ner.dict_whitelist = {'三毛缟斑': 'PERSON', '樱河琥珀': 'PERSON', '三毛缟': 'PERSON', '斑': 'PERSON', '樱河': 'PERSON', '琥珀': 'PERSON'}
-    HanLP("他说不⽤这么⿇烦，⼀起在床上睡就好了。我笑着说不⾏不⾏，我怕我会忍不住对琥珀做出不好的事。", tasks='ner/msra').pretty_print()
-    
-
+    #doc = HanLP(["斑说不⽤这么⿇烦，⼀起在床上睡就好了。我笑着说不⾏不⾏，我怕我会忍不住对琥珀做出不好的事。", "琥珀像被⽕烫到⼀样猛地抽回⾃⼰的⼿，放在⾝后，警戒地看着我。"], tasks='ner/msra').to_dict()
+    doc = HanLP(file_contents.splitlines(), tasks='ner/msra').to_dict()
+    print(doc['ner/msra'])
     assert len(after) != 0
 
