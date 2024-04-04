@@ -172,6 +172,7 @@ class FaceOff:
             print("Puzzle generated.")
             enfont = os.path.join(self.base_path, "font_en.ttf")
             en_img_path = os.path.join(puzzle_dir, image_file_name)
+            puzzle = "{}/{}\n".format(len(self.original_face_part), len(self.original_body)) + puzzle
             self.puzzle_to_imgfile(puzzle, enfont, en_img_path)
 
             print("Start translator, DO NOT use mouse or keyboard!!!")

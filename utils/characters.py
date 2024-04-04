@@ -117,17 +117,24 @@ def simple_text_replace(body, replaced_name, new_name):
         body = re.sub(pattern, new_name, body)
     return body
 
+def replace_eyes_and_hair(body, color, after):
+    body = body.replace(color + " eyes", after+" eyes")
+    body = body.replace(color + " hair", after+" hair")
+    body = body.replace(color + "-haired", after+"-haired")
+    body = body.replace(color + "head", after+"head")
+    return body
 def replace_facial_features(body, color_hidden_str):
-    colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "brown", "black", "white", "gray", "silver", "gold", "raven", "crimson"]
+    colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "brown", "black", "white", "gray", "silver", "gold", "raven", "crimson", "beaujolais", "cerulean", "sakura"]
     for color in colors:
-        body = body.replace(color + " eyes", color_hidden_str+" eyes")
-        body = body.replace(color + " hair", color_hidden_str+" hair")
-        body = body.replace(color + "-haired", color_hidden_str+"-haired")
-        body = body.replace(color + "head", color_hidden_str+"head")
+        body = replace_eyes_and_hair(body, color, color_hidden_str)
+        body = replace_eyes_and_hair(body, color.capitalize(), color_hidden_str)
     body = body.replace("sharp teeth", "teeth")
+    body = body.replace("Sharp teeth", "Teeth")
     single_words = ["blonde", "blond", "blondish", "blondness"]
     for word in single_words:
         pattern = r'\b'+word+r'\b'
+        body = re.sub(pattern, color_hidden_str, body)
+        pattern = r'\b'+word.capitalize()+r'\b'
         body = re.sub(pattern, color_hidden_str, body)
     return body
 
