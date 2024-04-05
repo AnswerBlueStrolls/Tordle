@@ -3,3 +3,4 @@ spacy
 faker
 selenium
 pillow
+hanlp

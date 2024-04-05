@@ -138,15 +138,12 @@ def replace_facial_features(body, color_hidden_str):
         body = re.sub(pattern, color_hidden_str, body)
     return body
 
-nlp_lang_dict = {"English": "en_core_web_sm", "Chinese": "zh_core_web_sm"}
 def find_characters_nlp(text, language):
-    if language not in nlp_lang_dict:
-        return []
-    nlp = spacy.load(nlp_lang_dict[language])
-    doc = nlp(text)
     person_names = []
     current_person = ""
     if language == "English":
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(text)
         for token in doc:
             if token.ent_type_ == "PERSON":
                 current_person += token.text + " "
@@ -157,10 +154,7 @@ def find_characters_nlp(text, language):
             person_names.append(current_person.strip())
         return list(set(person_names))
     if language == "Chinese":
-        for entity in doc.ents:
-            if entity.label_ == "PERSON":
-                print(entity.text)
-        return list(set(person_names))
+        return []
 
 '''
 find out if the two names are the same
