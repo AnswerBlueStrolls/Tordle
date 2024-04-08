@@ -122,9 +122,11 @@ def replace_eyes_and_hair(body, color, after):
     body = body.replace(color + " hair", after+" hair")
     body = body.replace(color + "-haired", after+"-haired")
     body = body.replace(color + "head", after+"head")
+    body = body.replace(color + " strand", after+"head")
+    body = body.replace(color + " strands", after+"head")
     return body
 def replace_facial_features(body, color_hidden_str):
-    colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "brown", "black", "white", "gray", "silver", "gold", "raven", "crimson", "beaujolais", "cerulean", "sakura"]
+    colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet", "purple", "pink", "brown", "black", "white", "gray", "silver", "gold", "raven", "crimson", "beaujolais", "cerulean", "sakura", "mint", "ginger"]
     for color in colors:
         body = replace_eyes_and_hair(body, color, color_hidden_str)
         body = replace_eyes_and_hair(body, color.capitalize(), color_hidden_str)
