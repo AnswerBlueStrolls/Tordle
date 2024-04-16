@@ -34,10 +34,17 @@ class FaceOff:
             self.original_body = db.get_fic_by_id(id)
         else:
             self.id, self.original_body = db.get_one_fic_randomly()
-        self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml")))
-        self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
-        self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names.yml"))
+        self.load_configs()
 
+    def load_configs(self):
+        lang = self.config.get("language")
+        if lang == "English":
+            self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml")))
+            self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
+            self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names.yml"))
+        if lang == "Chinese":
+            self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters_cn.yml")))
+            self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names_cn.yml"))
     def choose_face_part(self):
         half = math.floor(len(self.original_body)/2)
         total = self.config.get("limit")
@@ -63,10 +70,16 @@ class FaceOff:
         if lang is None:
             lang = "English"
         #try nlp first
-        print("text length is", len(self.original_face_part))
-        nlp_characters = characters.find_characters_nlp(self.original_face_part, lang)
-        print("Found {} characters".format(len(nlp_characters)))
-        for nlp_name in nlp_characters:
+        print("text length is", len(self.original_face_part), "language is", lang)
+        if lang == "English":
+            found_characters = characters.find_characters_nlp(self.original_face_part)
+        elif lang == "Chinese":
+            white_list = characters.get_whitelist(self.meta_characters)
+            found_characters = characters.find_characters_hanlp(self.original_face_part, white_list)
+        if found_characters is None:
+            return
+        print("Found {} characters".format(len(found_characters)))
+        for nlp_name in found_characters:
             if nlp_name in self.exceptions:
                 continue
             if nlp_name is None or nlp_name == "":

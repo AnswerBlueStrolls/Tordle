@@ -69,9 +69,10 @@
   first: 铁虎
   last: 南云
   tag: Nagumo Tetora
+
 -
   tag: Takamine Midori
-  tag: 高峯翠
+  full: 高峯翠
   first: 翠
   last: 高峯
 
@@ -127,39 +128,31 @@
   last: 乱
 
 -
-  full: Tomoe Hiyori
-  tag: Hiyori Tomoe
-  first: Hiyori
-  last: Tomoe
+  full: 巴日和
+  tag: Tomoe Hiyori
+  first: 日和
+  last: 巴
   alias:
-  - Ohiisan
-  - Ohii-san
+  - 阿日前辈
 
 -
-  full: Saegusa Ibara
-  tag: Ibara Saegusa
-  first: Ibara
-  last: Saegusa
+  full: 七种茨
+  tag: Saegusa Ibara
+  first: 茨
+  last: 七种
 -
-  full: Sazanami Jun
-  tag: Jun Sazanami
-  first: Jun
-  last: Sazanami
-  alias:
-  - Jun - kun
-  - Jun - han
+  full: 涟纯
+  tag: Sazanami Jun
+  first: 纯
+  last: 涟
+
 # Valkyrie
 -
-  full: Itsuki Shu
-  first: Shu
-  last: Itsuki
-  tag: Shu Itsuki
-  alias:
-  - Oshi - san
-  - Shu - kun
-  - Shu - chan
-  - Oshi
-  - Oshi - san~
+  full: 斋宫宗
+  first: 宗
+  last: 斋宫
+  tag: Itsuki Shu
+
 
 -
   full: 影片美伽
@@ -169,19 +162,18 @@
 
 # 2wink
 -
-  full: Aoi Hinata
-  tag: Hinata Aoi
-  first: Hinata
-  last: Aoi
+  full: 葵日向
+  tag: Aoi Hinata
+  first: 日向
+  last: 葵
   alias:
-  - Aniki
+  - 大哥
 - 
-  full: Aoi Yuta
-  tag: Yuta Aoi
-  first: Yuta
-  last: Aoi
-  alias:
-  - Yuuta
+  full: 葵裕太
+  tag: Aoi Yuta
+  first: 裕太
+  last: 葵
+
 # Crazy:B
 -
   full: 天城燐音
@@ -194,12 +186,6 @@
   first: HiMERU
   last: HiMERU
   tag: HiMERU
-  alias:
-  - HiMERU - han
-  - MERU
-  - Himeru
-  - Merumeru
-  - Merumeru~
 -
   full: 樱河琥珀
   first: 琥珀
@@ -207,6 +193,7 @@
   tag: Oukawa Kohaku
   alias:
   - 琥珀さん
+  - 琥珀桑
   - 琥珀亲
   - 小琥珀
   - 琥珀酱
@@ -219,28 +206,23 @@
 # Rythm Link
 # Undead
 -
-  full: Sakuma Rei
-  first: Rei
-  last: Sakuma
-  tag: Rei Sakama
-  alias:
-  - Sakuma - san
--
-  full: Hakaze Kaoru
-  first: Kaoru
-  last: Hakaze
-  tag: Kaoru Hakaze
-  alias:
-  - Kaoru - kun
+  full: 朔间零
+  first: 零
+  last: 朔间
+  tag: Sakama Rei
 
 -
-  full: Ogami Koga
-  first: Koga
-  last: Ogami
-  tag: Koga Ogami
-  alias:
-  - Wan - chan
-  - Oogami
+  full: 羽风薰
+  first: 薰
+  last: 羽风
+  tag: Hakaze Kaoru
+
+-
+  full: 大神晃牙
+  first: 晃牙
+  last: 大神
+  tag: Ogami Koga
+
 -
   full: 乙狩阿多尼斯
   first: 阿多尼斯
@@ -248,20 +230,20 @@
   tag: Otogari Adonis
 # Ra*bits
 -
-  full: Mashiro Tomoya
-  first: Tomoya
-  last: Mashiro
-  tag: Tomoya Mashiro
+  full: 真白友也
+  first: 友也
+  last: 真白
+  tag: Mashiro Tomoya
 -
-  full: Nito Nazuna
-  tag: Nazuna Nito
-  first: Nazuna
-  last: Nito
+  full: 仁兔成鸣
+  tag: Nito Nazuna
+  first: 成鸣
+  last: 仁兔
 - 
-  full: Tenma Mitsuru
-  tag: Mitsuru Tenma
-  first: Mitsuru
-  last: Tenma
+  full: 天满光
+  tag: Tenma Mitsuru
+  first: 光
+  last: 天满
 -
   full: 紫之创
   tag: Shino Hajime
@@ -308,8 +290,7 @@
   first: 凛月
   last: 朔间
   tag: Sakuma Riitsu
-  alias:
-  - Ritsu
+
 -
   full: 鸣上岚
   first: 岚
