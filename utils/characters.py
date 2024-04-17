@@ -132,7 +132,7 @@ def replace_facial_features(body, color_hidden_str):
         body = replace_eyes_and_hair(body, color.capitalize(), color_hidden_str)
     body = body.replace("sharp teeth", "teeth")
     body = body.replace("Sharp teeth", "Teeth")
-    single_words = ["blonde", "blond", "blondish", "blondness"]
+    single_words = ["blonde", "blond", "blondish", "blondness", "brunette"]
     for word in single_words:
         pattern = r'\b'+word+r'\b'
         body = re.sub(pattern, color_hidden_str, body)
