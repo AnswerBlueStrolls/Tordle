@@ -34,6 +34,6 @@ def test_chinese():
         file_contents = file.read()
     testme.set_original_face_part(file_contents)
     after = testme.do_face_off()
-
+    print(after)
     assert len(after) != 0
 

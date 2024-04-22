@@ -95,6 +95,8 @@ class FaceOff:
                 self.ask_for_help(nlp_name)
             else:
                 print("Error occurred.")
+                if self.debug_mode:
+                    print("name:", nlp_name)
                 logging.error("id: %d, name: %s", self.id, nlp_name)
         # Find the characters that are in the original face but not found by nlp
         for first in self.meta_characters.keys():

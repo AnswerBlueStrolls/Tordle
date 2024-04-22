@@ -166,8 +166,8 @@ def find_characters_hanlp(text, white_list):
     for line in doc['ner/msra']:
         for word in line:
             if word[1] == 'PERSON':
-                persons.append(word[1])
-    return persons
+                persons.append(word[0])
+    return list(set(persons))
 
 def get_whitelist(characters):
     white_list = {}
