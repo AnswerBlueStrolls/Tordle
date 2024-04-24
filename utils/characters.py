@@ -41,6 +41,7 @@ class Character:
             if len(res) > 0:
                 return True
         return False
+
     def exist_in_text(self, body):
         for key in character_keys:
             name = self.get_name(key)

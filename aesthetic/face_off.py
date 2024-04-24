@@ -79,6 +79,9 @@ class FaceOff:
         if found_characters is None:
             return
         print("Found {} characters".format(len(found_characters)))
+        if self.debug_mode:
+            print(found_characters)
+        print("now changed character is ", self.changed_characters)
         for nlp_name in found_characters:
             if nlp_name in self.exceptions:
                 continue
@@ -89,6 +92,8 @@ class FaceOff:
                 continue
             character_name = self.mapping_meta_character(nlp_name)
             if character_name != "": # found a match character
+                if self.debug_mode:
+                    print("found character:", character_name, "nlp_name is", nlp_name)
                 self.changed_characters[character_name] = ""
                 continue
             if self.debug_mode:
@@ -98,11 +103,13 @@ class FaceOff:
                 if self.debug_mode:
                     print("name:", nlp_name)
                 logging.error("id: %d, name: %s", self.id, nlp_name)
-        # Find the characters that are in the original face but not found by nlp
-        for first in self.meta_characters.keys():
-            character = self.meta_characters[first]
-            if character.exist_in_text(self.original_face_part):
-                self.changed_characters[first] = ""
+        print("after mapping changed character is ", self.changed_characters)
+        if lang == "English":
+            # Find the characters that are in the original face but not found by nlp
+            for first in self.meta_characters.keys():
+                character = self.meta_characters[first]
+                if character.exist_in_text(self.original_face_part):
+                    self.changed_characters[first] = ""
 
     def find_avatars(self):
         for character in self.changed_characters.keys():
@@ -212,6 +219,8 @@ class FaceOff:
             print("Cannot find any characters")
             return ""
         self.find_avatars()
+        if self.debug_mode:
+            print(self.changed_characters)
         result = self.do_replace_face(self.original_face_part)
         result = self.do_other_replace(result)
         return result
