@@ -1,4 +1,4 @@
-import yaml, re, spacy
+import yaml, re, spacy, os
 import hanlp
 
 character_keys = ['full','full_revert', 'first', 'last']
@@ -26,6 +26,8 @@ class Character:
                     return self.full_revert
                 else:
                     return ""
+            case 'tag':
+                return self.tag
         return ""
     def print(self):
         template = "Idol: {} {}. Nick names: {}".format(self.first, self.last, self.alias)
@@ -60,17 +62,23 @@ class Character:
                 return True
     
 
-    def replace(self, body, new_name):
-        for key in character_keys:
-            old_name = self.get_name(key)
-            if len(old_name) == 0:
-                continue
-            body = replace_all_possible_name(old_name, new_name, body)
+    def replace(self, body, new_name, lang):
         for alien in self.alias:
             old_name = alien
             if "-" in alien:
                 old_name = re.sub(r'\s+', '', alien)
-            body = replace_all_possible_name(old_name, new_name, body)
+            if lang == "Chinese":
+                body = replace_all_possible_name_cn(old_name, new_name, body)
+            else:
+                body = replace_all_possible_name(old_name, new_name, body)
+        for key in character_keys:
+            old_name = self.get_name(key)
+            if len(old_name) == 0:
+                continue
+            if lang == "Chinese":
+                body = replace_all_possible_name_cn(old_name, new_name, body)
+            else:
+                body = replace_all_possible_name(old_name, new_name, body)
         return body
 
 def replace_all_possible_name(replaced_name, new_name, body):
@@ -90,6 +98,10 @@ def replace_all_possible_name(replaced_name, new_name, body):
         body = re.sub(pattern, new_name, body)
     return body
 
+def replace_all_possible_name_cn(replaced_name, new_name, body):
+    body = body.replace(replaced_name, new_name)
+    return body
+
 def load_characters_from_yaml_file(file_path):
     characters = []
     characters_objs = {}
@@ -105,18 +117,25 @@ def load_characters_from_yaml_file(file_path):
 
 def load_name_list_from_yaml_file(file_path):
     name_list = []
+    if not os.path.exists(file_path):
+        return name_list
     with open(file_path, 'r') as stream:
         try:
             name_list = yaml.safe_load(stream)
+            if name_list is None:
+                name_list = []
         except yaml.YAMLError as exc:
             print(exc)
     return name_list
 
-def simple_text_replace(body, replaced_name, new_name):
+def simple_text_replace(body, replaced_name, new_name, lang):
     base = [replaced_name, replaced_name+"'s", replaced_name.lower(), replaced_name.upper()]
     for old_name in base:
-        pattern = r'\b' + re.escape(old_name) + r'\b'
-        body = re.sub(pattern, new_name, body)
+        if lang == "English":
+            pattern = r'\b' + re.escape(old_name) + r'\b'
+            body = re.sub(pattern, new_name, body)
+        else:
+            body = body.replace(old_name, new_name)
     return body
 
 def replace_eyes_and_hair(body, color, after):

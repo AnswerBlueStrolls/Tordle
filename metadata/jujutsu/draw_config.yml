@@ -1,0 +1,6 @@
+db_name: jujutsu.db
+table_name: fanfics_raw
+fanfic_index: 21
+limit: 1500
+debug: false
+language: Chinese

@@ -3,6 +3,8 @@ from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
 import utils.string_functions as str_func
 import utils.image as img_func
+from opencc import OpenCC
+from PIL import Image
 bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica", "Jesus"]
 hidden_str = "HIDDEN_INFO"
 hidden_color = "HIDDEN_COLOR"
@@ -16,8 +18,11 @@ class FaceOff:
     exceptions = []
     meta_characters = {}
     special_names = []
+    remove_names = []
     debug_mode = False
     base_path = ""
+    tags = []
+    language = ""
 
     def __init__(self, config_file, id = 0):
         if config_file == "":
@@ -33,18 +38,19 @@ class FaceOff:
             self.id = id
             self.original_body = db.get_fic_by_id(id)
         else:
-            self.id, self.original_body = db.get_one_fic_randomly()
+            self.id, self.original_body, self.tags = db.get_one_fic_randomly()
         self.load_configs()
 
     def load_configs(self):
-        lang = self.config.get("language")
-        if lang == "English":
+        self.language = self.config.get("language")
+        if self.language == "English":
             self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml")))
             self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
             self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names.yml"))
-        if lang == "Chinese":
+        if self.language == "Chinese":
             self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters_cn.yml")))
             self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names_cn.yml"))
+            self.remove_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "remove_names_cn.yml"))
     def choose_face_part(self):
         half = math.floor(len(self.original_body)/2)
         total = self.config.get("limit")
@@ -61,19 +67,19 @@ class FaceOff:
     def mapping_meta_character(self, in_name):
         for first in self.meta_characters.keys():
             character = self.meta_characters[first]
+            tag = character.get_name("tag")
             if character.is_the_same_person(in_name):
-                return first
-        return ""
+                return first, tag
+        return "", ""
 
     def find_characters(self):
-        lang = self.config.get("language")
-        if lang is None:
-            lang = "English"
+        if self.language is None:
+            self.language = "English"
         #try nlp first
-        print("text length is", len(self.original_face_part), "language is", lang)
-        if lang == "English":
+        print("text length is", len(self.original_face_part), "language is", self.language)
+        if self.language == "English":
             found_characters = characters.find_characters_nlp(self.original_face_part)
-        elif lang == "Chinese":
+        elif self.language == "Chinese":
             white_list = characters.get_whitelist(self.meta_characters)
             found_characters = characters.find_characters_hanlp(self.original_face_part, white_list)
         if found_characters is None:
@@ -81,7 +87,6 @@ class FaceOff:
         print("Found {} characters".format(len(found_characters)))
         if self.debug_mode:
             print(found_characters)
-        print("now changed character is ", self.changed_characters)
         for nlp_name in found_characters:
             if nlp_name in self.exceptions:
                 continue
@@ -90,10 +95,14 @@ class FaceOff:
             if nlp_name in self.special_names:
                 self.changed_characters[nlp_name] = hidden_str
                 continue
-            character_name = self.mapping_meta_character(nlp_name)
+            character_name, tag = self.mapping_meta_character(nlp_name)
             if character_name != "": # found a match character
                 if self.debug_mode:
                     print("found character:", character_name, "nlp_name is", nlp_name)
+                if self.language == "Chinese" and tag not in self.tags:
+                    if len(nlp_name) < 2:
+                        print("nlp_name is too short and not in tag, skip it", nlp_name)
+                        continue
                 self.changed_characters[character_name] = ""
                 continue
             if self.debug_mode:
@@ -103,8 +112,9 @@ class FaceOff:
                 if self.debug_mode:
                     print("name:", nlp_name)
                 logging.error("id: %d, name: %s", self.id, nlp_name)
-        print("after mapping changed character is ", self.changed_characters)
-        if lang == "English":
+        if self.debug_mode:
+            print("after mapping changed character is ", self.changed_characters)
+        if self.language == "English":
             # Find the characters that are in the original face but not found by nlp
             for first in self.meta_characters.keys():
                 character = self.meta_characters[first]
@@ -140,18 +150,20 @@ class FaceOff:
         for first in self.changed_characters:
             if first in self.meta_characters:
                 character = self.meta_characters[first]
-                substitute = character.replace(substitute, self.changed_characters[first])
+                substitute = character.replace(substitute, self.changed_characters[first], self.config.get("language"))
             else:
                 new_name = self.changed_characters[first]
-                substitute = characters.simple_text_replace(substitute, first, new_name)
+                substitute = characters.simple_text_replace(substitute, first, new_name, self.config.get("language"))
             if first == "Natsume":
                 substitute = str_func.lowercase_end_of_words(substitute)
         return substitute
     def do_other_replace(self, substitute):
         # replace unfound special_names
         for special_name in self.special_names:
-            substitute = characters.simple_text_replace(substitute, special_name, hidden_str)
+            substitute = characters.simple_text_replace(substitute, special_name, hidden_str, self.config.get("language"))
         substitute = characters.replace_facial_features(substitute, hidden_color)
+        for remove_name in self.remove_names:
+            substitute = characters.simple_text_replace(substitute, remove_name, "", self.config.get("language"))
         return substitute
 
     def puzzle_to_imgfile(self, puzzle, font, file_path, lang="English"):
@@ -176,7 +188,7 @@ class FaceOff:
         current_time = datetime.datetime.now()
         time_string = current_time.strftime("%Y-%m-%d_%H%M%S")
         puzzle_file_name = "{}-{}_puzzle.txt".format(time_string, str(self.id))
-        image_file_name = "{}-{}_image_en.png".format(time_string, str(self.id))
+        
         answer_file_name = "{}-{}_answer.txt".format(time_string, str(self.id))
         puzzle_dir = os.path.join(self.base_path, "puzzles")
         answer_dir = os.path.join(self.base_path, "answers")
@@ -192,19 +204,36 @@ class FaceOff:
         with open(os.path.join(puzzle_dir, puzzle_file_name), 'w') as file:
             file.write(puzzle)
             print("Puzzle generated.")
-            enfont = os.path.join(self.base_path, "font_en.ttf")
-            en_img_path = os.path.join(puzzle_dir, image_file_name)
+            original_font = "font_en.ttf"
+            trans_font = "font_cn.ttf"
+            original_file = "en.png"
+            trans_file = "cn.png"
+            org_lang = "English"
+            trans_lang = "Chinese"
+            if self.language == "Chinese":
+                original_font = "font_cn.ttf"
+                trans_font = "font_en.ttf"
+                original_file = "cn.png"
+                trans_file = "en.png"
+                org_lang = "Chinese"
+                trans_lang = "English"
+            image_file_name = "{}-{}_image_{}".format(time_string, str(self.id), original_file)
+            orgfont = os.path.join(self.base_path, "..", "common", original_font)
+            org_img_path = os.path.join(puzzle_dir, image_file_name)
             puzzle = "{}/{}\n".format(len(self.original_face_part), len(self.original_body)) + puzzle
-            self.puzzle_to_imgfile(puzzle, enfont, en_img_path)
-
-            print("Start translator, DO NOT use mouse or keyboard!!!")
-            puzzle = puzzle.replace(hidden_str, f"[{hidden_str}]")
-            puzzle = puzzle.replace(hidden_color, f"[{hidden_color}]")
-            tranlated_puzzle = trans.translate_with_deepl(puzzle)
-            print("Puzzle translated.")
-            cnfont = os.path.join(self.base_path, "font_cn.ttf")
-            cn_img_path = os.path.join(puzzle_dir, image_file_name.replace("en.png", "cn.png"))
-            self.puzzle_to_imgfile(tranlated_puzzle, cnfont, cn_img_path, lang="Chinese")
+            self.puzzle_to_imgfile(puzzle, orgfont, org_img_path, lang=org_lang)
+            if org_lang == "English":
+                print("Start translator, DO NOT use mouse or keyboard!!!")
+                puzzle = puzzle.replace(hidden_str, f"[{hidden_str}]")
+                puzzle = puzzle.replace(hidden_color, f"[{hidden_color}]")
+                tranlated_puzzle = trans.translate_with_deepl(puzzle)
+                print("Puzzle translated.")
+                transfont = os.path.join(self.base_path, "..", "common", trans_font)
+                trans_img_path = os.path.join(puzzle_dir, image_file_name.replace(original_file, trans_file))
+                self.puzzle_to_imgfile(tranlated_puzzle, transfont, trans_img_path, lang=trans_lang)
+            else:
+                img = Image.open(org_img_path)
+                img.show()
 
     def set_meta_characters(self, characters):
         self.meta_characters = characters
@@ -220,14 +249,23 @@ class FaceOff:
             return ""
         self.find_avatars()
         if self.debug_mode:
-            print(self.changed_characters)
+            print("changed characters: ",self.changed_characters)
         result = self.do_replace_face(self.original_face_part)
         result = self.do_other_replace(result)
         return result
 
     def face_off(self):
+        if self.id == "":
+            print("no id found")
+            return False
         print("ID: ", str(self.id))
         self.choose_face_part()
+        if self.language == "Chinese":
+            cc = OpenCC('t2s')
+            self.original_face_part = cc.convert(self.original_face_part)
+        if len(self.original_face_part) == 0:
+            print("Has no content")
+            return False
         result = self.do_face_off()
         if self.debug_mode:
             res = str_func.highlight_keywords_all(result, self.changed_characters.values())

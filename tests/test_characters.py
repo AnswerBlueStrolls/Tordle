@@ -32,6 +32,7 @@ def test_chinese():
     with open('tests/test.txt', 'r') as file:
         file_contents = file.read()
     testme.set_original_face_part(file_contents)
+    testme.tags = ['Mikejima Madara', 'Oukawa Kohaku']
     after = testme.do_face_off()
     print(after)
     assert len(after) != 0

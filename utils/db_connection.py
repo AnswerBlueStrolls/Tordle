@@ -20,20 +20,33 @@ class AODatabase:
         if self.language == "":
             sql = "SELECT * FROM {} ORDER BY RANDOM() LIMIT 1".format(self.table_name)
         else:
-            sql = "SELECT * FROM {} WHERE language = '{}' ORDER BY RANDOM() LIMIT 1".format(self.table_name, self.language)
+            sql = "SELECT * FROM {} WHERE language LIKE '%{}%' ORDER BY RANDOM() LIMIT 1".format(self.table_name, language_map[self.language])
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
         crsr.execute(sql)
         result = crsr.fetchall()
+        if len(result) == 0:
+            print("Cannot find work by sql:", sql)
+            conn.close()
+            return "", "", ""
         id = result[0][0]
         body = result[0][self.fanfic_index]
+        tags = result[0][7].split(', ')
         conn.close()
-        return id, body
+        return id, body, tags
 
     def get_fic_by_id(self, id):
-        sql = "SELECT * FROM {} WHERE work_id = {} LIMIT 1".format(self.table_name, id)
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
+        crsr.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.table_name,))
+        existing_table = crsr.fetchone()
+
+        if not existing_table:
+            print(f"table '{self.table_name}' not exist")
+            conn.close()
+            return ""
+        print("Try to find id:", id)
+        sql = "SELECT * FROM {} WHERE work_id = {} LIMIT 1".format(self.table_name, id)
         crsr.execute(sql)
         result = crsr.fetchall()
         if len(result) == 0:
