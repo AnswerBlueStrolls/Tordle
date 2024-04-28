@@ -1,7 +1,6 @@
 from utils.characters import replace_all_possible_name, the_same_name, replace_facial_features, load_characters_from_yaml_file, get_whitelist
 from utils.image import find_sensitive_words_index
 from aesthetic.face_off import FaceOff
-import hanlp
 
 
 def test_replace_all_possible_name():
