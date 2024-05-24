@@ -3,3 +3,4 @@ table_name: fanfics_raw
 fanfic_index: 21
 limit: 5300
 debug: true
+language: Chinese

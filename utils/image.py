@@ -11,6 +11,7 @@ def find_sensitive_words_index(text):
             for i in range(index, index+len(keyword)):
                 indexes.append(i)
     return sorted(indexes)
+
 def remove_bottom_whitespace(img, margin):
     width, height = img.size
     bottom = height
@@ -26,7 +27,7 @@ def remove_bottom_whitespace(img, margin):
     img_cropped = img.crop((0, 0, width, bottom+margin))
     return img_cropped
 
-def text_to_image(text, font_path, font_size, image_width, margin):
+def text_to_image(text, font_path, font_size, image_width, margin, plain):
     # Load a font
     font = ImageFont.truetype(font_path, font_size)
     line_spacing = 1
@@ -52,7 +53,9 @@ def text_to_image(text, font_path, font_size, image_width, margin):
     sensitive_count = 0
     for line in text.split('\n'):
         _, text_height = draw.textsize(line, font=font)
-        words_index = find_sensitive_words_index(line)
+        words_index = []
+        if not plain:
+            words_index = find_sensitive_words_index(line)
         if len(words_index) == 0:
             x = margin
             draw.text((x, y), line, fill='black', font=font)

@@ -118,11 +118,13 @@ def load_characters_from_yaml_file(file_path):
 def load_name_list_from_yaml_file(file_path):
     name_list = []
     if not os.path.exists(file_path):
+        print(f'File {file_path} not exist')
         return name_list
     with open(file_path, 'r') as stream:
         try:
             name_list = yaml.safe_load(stream)
             if name_list is None:
+                print('name list is none')
                 name_list = []
         except yaml.YAMLError as exc:
             print(exc)

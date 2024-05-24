@@ -1,7 +1,8 @@
 import aesthetic.face_off as face
-import sys, logging
+import sys, logging, os
 import argparse
 import crawler.loader as loader
+from utils.characters import load_name_list_from_yaml_file, replace_sensitive_words
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s %(message)s')
 
 def lottery(config_name, id):
@@ -9,8 +10,11 @@ def lottery(config_name, id):
     while True:
         lottery = face.FaceOff(config_name, id)
         result = lottery.face_off()
-        if not result:
-            print("Failed, retry.")
+        if result == 0:
+            print("Continue ...")
+        if result == -1:
+            print("Start a new one")
+            lottery.reset()
         else:
             return
 
@@ -31,6 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--action', type=str, help="action to do (load, draw, file)")
     parser.add_argument('--id', type=int, default=0, help="the id of fanfic")
     parser.add_argument('--limit', type=int, default=-1, required=False, help="the max number of fanfic to load")
+    parser.add_argument('--file', type=str, help='local file to un-sensitive')
     args = parser.parse_args()
     if args.action == "load":
         load(args.config, args.id, args.limit)

@@ -32,7 +32,11 @@ class Loader:
             else:
                 return ""
     def load_one_fic(self, id):
-        if len(self.db.get_fic_by_id(id)) > 0:
+        if self.db is None:
+            print("Database is not initialized!")
+            return False
+        body = self.db.get_fic_by_id(id)
+        if body is not None and len(body) > 0:
             print("Fanfic already exist, skip ...")
             return False
         csvfile =  self.load_to_file(id)

@@ -5,13 +5,14 @@ import utils.string_functions as str_func
 import utils.image as img_func
 from opencc import OpenCC
 from PIL import Image
-bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica", "Jesus"]
+bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica", "Jesus", "Mr.", "Mrs."]
 hidden_str = "HIDDEN_INFO"
 hidden_color = "HIDDEN_COLOR"
 class FaceOff:
     id = 0
     original_body = ""
     original_face_part = ""
+    original_face_end_index = -1
     changed_face = ""
     changed_characters = {}
     config = {}
@@ -23,6 +24,9 @@ class FaceOff:
     base_path = ""
     tags = []
     language = ""
+    db = None
+    history = False
+    read_mode = False
 
     def __init__(self, config_file, id = 0):
         if config_file == "":
@@ -30,15 +34,24 @@ class FaceOff:
         self.base_path = os.path.dirname(config_file)
         self.config = yaml.safe_load(open(config_file))
         self.config["db_name"] = os.path.join(self.base_path, self.config["db_name"])
-        if self.config["debug"] == True:
-            self.debug_mode = True
-        db = database.AODatabase()
-        db.init_from_config(self.config)
+        self.debug_mode = self.config["debug"]
+        if self.debug_mode is None:
+            self.debug_mode = False
+        self.read_mode = self.config["read_mode"]
+        if self.read_mode is None:
+            self.read_mode = False
+        print(f'Read mode is {self.read_mode}')
+        self.db = database.AODatabase()
+        self.db.init_from_config(self.config)
         if id > 0:
             self.id = id
-            self.original_body = db.get_fic_by_id(id)
+            self.original_body = self.db.get_fic_by_id(id)
         else:
-            self.id, self.original_body, self.tags = db.get_one_fic_randomly()
+            self.history = self.config["history"]
+            if self.history is None:
+                self.history = False
+            print(f'History is {self.history}')
+            self.id, self.original_body, self.tags = self.db.get_one_fic_randomly(self.history)
         self.load_configs()
 
     def load_configs(self):
@@ -62,7 +75,7 @@ class FaceOff:
             print("fic is too short, use the whole fic, length is", len(self.original_body))
             self.original_face_part = self.original_body
             return
-        self.original_face_part = str_func.choose_piece(self.original_body, total)
+        self.original_face_part, self.original_face_end_index = str_func.choose_piece(self.original_body, total, self.original_face_end_index)
     
     def mapping_meta_character(self, in_name):
         for first in self.meta_characters.keys():
@@ -71,6 +84,12 @@ class FaceOff:
             if character.is_the_same_person(in_name):
                 return first, tag
         return "", ""
+    def reset(self):
+        self.changed_characters.clear()
+        self.tags.clear()
+        self.original_body = ""
+        self.original_face_part = ""
+        self.original_face_end_index = -1
 
     def find_characters(self):
         if self.language is None:
@@ -103,9 +122,10 @@ class FaceOff:
                     if len(nlp_name) < 2:
                         print("nlp_name is too short and not in tag, skip it", nlp_name)
                         continue
-                self.changed_characters[character_name] = ""
+                if character_name not in self.changed_characters:
+                    self.changed_characters[character_name] = ""
                 continue
-            if self.debug_mode:
+            if self.debug_mode or self.read_mode:
                 self.ask_for_help(nlp_name)
             else:
                 print("Error occurred.")
@@ -128,10 +148,11 @@ class FaceOff:
             self.changed_characters[character] = self.generate_random_name()
 
     def ask_for_help(self, name):
-        question = "Not found this name: {}. Is it a correct name? (y/n)".format(name)
+        question = "Not found this name: {} Add it then input y to reload or input n to ignore (y/n)".format(name)
         ans = input(question).strip().lower()
         if ans == 'y':
             self.changed_characters[name] = ""
+            self.load_configs()
             return
         elif ans == 'n':
             print("Ignore this name.")
@@ -140,7 +161,7 @@ class FaceOff:
     def generate_random_name(self):
         faker = Faker()
         full_name = faker.name()
-        ret_name = full_name.split()[0]
+        ret_name = full_name.split(' ')[0]
         if ret_name in self.exceptions:
             return self.generate_random_name()
         if ret_name in bad_alias:
@@ -170,17 +191,24 @@ class FaceOff:
         paragraphs = puzzle.strip().split('\n')
         file_width = 750
         width = 60
+        fontsize = 28
         indent = "  "
         if lang == "Chinese":
             width = 30
             file_width = 900
             indent = "    "
         formatted_text = "\n"
+        if self.read_mode:
+            file_width = file_width*3
+            fontsize = fontsize+10
+            width = 70
+
         for paragraph in paragraphs:
             paragraph = indent+paragraph
             formatted_text += textwrap.fill(paragraph, width)
             formatted_text += "\n"
-        img = img_func.text_to_image(formatted_text, font, 28, file_width, 20)
+        print(f"generate file, width {file_width}, font size {fontsize}, read_mode {self.read_mode}")
+        img = img_func.text_to_image(formatted_text, font, fontsize, file_width, 20, self.read_mode)
         img.save(file_path)
         print("File saved:", file_path)
 
@@ -196,11 +224,13 @@ class FaceOff:
             os.makedirs(puzzle_dir)
         if not os.path.exists(answer_dir):
             os.makedirs(answer_dir)
-        with open(os.path.join(answer_dir, answer_file_name), 'w') as file:
-            id_text = "work id: {}\n".format(str(self.id))
-            file.write(id_text)
-            json.dump(answer, file)
-            print("Answer generated.")
+        # read mode don't need answer.txt
+        if not self.read_mode:
+            with open(os.path.join(answer_dir, answer_file_name), 'w') as file:
+                id_text = "work id: {}\n".format(str(self.id))
+                file.write(id_text)
+                json.dump(answer, file)
+                print("Answer generated.")
         with open(os.path.join(puzzle_dir, puzzle_file_name), 'w') as file:
             file.write(puzzle)
             print("Puzzle generated.")
@@ -245,7 +275,7 @@ class FaceOff:
     def do_face_off(self):
         self.find_characters()
         if len(self.changed_characters) == 0:
-            print("Cannot find any characters")
+            print(f'Cannot find any characters, tags are: {self.tags}')
             return ""
         self.find_avatars()
         if self.debug_mode:
@@ -257,20 +287,49 @@ class FaceOff:
     def face_off(self):
         if self.id == "":
             print("no id found")
-            return False
+            return -1
         print("ID: ", str(self.id))
-        self.choose_face_part()
-        if self.language == "Chinese":
-            cc = OpenCC('t2s')
-            self.original_face_part = cc.convert(self.original_face_part)
-        if len(self.original_face_part) == 0:
-            print("Has no content")
-            return False
-        result = self.do_face_off()
-        if self.debug_mode:
-            res = str_func.highlight_keywords_all(result, self.changed_characters.values())
-            res = str_func.highlight_keywords_all(result, self.special_names)
-            res = str_func.highlight_keywords_all(res, self.changed_characters.keys())
-            print(res)
-        self.write_out(result, self.changed_characters)
-        return True
+        while True:
+            self.choose_face_part()
+            if self.language == "Chinese":
+                cc = OpenCC('t2s')
+                self.original_face_part = cc.convert(self.original_face_part)
+            if len(self.original_face_part) == 0:
+                print("Has no content")
+                return -1
+            result = self.do_face_off()
+            if len(result) == 0:
+                return -1
+            if self.debug_mode:
+                res = str_func.highlight_keywords_all(result, self.changed_characters.values())
+                res = str_func.highlight_keywords_all(result, self.special_names)
+                res = str_func.highlight_keywords_all(res, self.changed_characters.keys())
+                print(res)
+            self.write_out(result, self.changed_characters)
+            if not self.read_mode:
+                return 1
+            else:
+                question = "Choose action: (C)ontinue / (S)kip / (L)ink / (A)nswer / (I)gnore / (E)xit:"
+                ans = input(question).strip().lower()
+                if ans == 'c':
+                    continue
+                elif ans == 's':
+                    self.db.save_result_to_history(self.id, 0)
+                    print(f'answer is {self.changed_characters}, tag is {self.tags}')
+                    print("Remove this one, go to another work...")
+                    return -1
+                elif ans == 'l':
+                    print("Save this one, and go to another work...")
+                    print(f'answer is {self.changed_characters}, tag is {self.tags}')
+                    self.db.save_result_to_history(self.id, 1)
+                    # TODO: open the link
+                    return -1
+                elif ans == 'a':
+                    print(f'answer is {self.changed_characters}, tag is {self.tags}')
+                    continue
+                elif ans == 'i':
+                    print("Ignore this fanfic, find another one")
+                    print(f'answer is {self.changed_characters}, tag is {self.tags}')
+                    return -1
+                elif ans == 'e':
+                    return 1

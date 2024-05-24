@@ -4,3 +4,5 @@ fanfic_index: 21
 limit: 1500
 debug: false
 language: Chinese
+history: true
+read_mode: true

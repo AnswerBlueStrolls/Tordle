@@ -3,12 +3,17 @@
   full: 五条悟
   first: 悟
   last: 五条
+  alias:
+  - 悟君
+  - 阿悟
 
 -
   tag: Gojo Satoru
   full: 夏油杰
   first: 杰
   last: 夏油
+  alias:
+  - 杰君
 
 -
   tag: Kugisaki Nobara
@@ -20,6 +25,8 @@
   first: 惠
   last: 伏黑
   full: 伏黑惠
+  alias:
+  - 禅院惠
 
 -
   tag: Itadori Yuuji
@@ -62,3 +69,101 @@
   full: 里梅
   first: 里梅
   last: 里梅
+
+-
+  tag: Mahito (Jujutsu Kaisen)
+  full: 真人
+  first: 真人
+  last: 真人
+-
+  tag: Nanami Kento
+  full: 七海建人
+  first: 建人
+  last: 七海
+
+-
+  tag: Higuruma Hiromi
+  full: 日车宽见
+  first: 宽见
+  last: 日车
+
+-
+  tag: Fushiguro Tsumiki
+  full: 伏黑津美纪
+  first: 津美纪
+  last: 伏黑津美纪
+-
+  tag: Fushiguro Toji
+  full: 伏黑甚尔
+  first: 甚尔
+  last: 伏黑甚尔
+
+-
+  tag: Iriri Shoko
+  full: 家入硝子
+  first: 硝子
+  last: 家入
+-
+  tag: Ijichi Kiyotaka
+  full: 伊地知洁高
+  first: 洁高
+  last: 伊地知
+
+-
+  tag: Chousou (Jujutsu Kaisen)
+  full: 胀相
+  first: 胀相
+  last: 胀相
+
+-
+  tag: Zenin Maki
+  full: 禅院真希
+  first: 真希
+  last: 禅院真希
+
+-
+  tag: Zenin Mai
+  full: 禅院真依
+  first: 真依
+  last: 禅院真依
+
+-
+  tag: Takaba Fumihiko
+  full: 高羽史彦
+  last: 高羽
+  first: 史彦
+
+-
+  tag: Miwa Kasumi
+  full: 三轮霞
+  first: 霞
+  last: 三轮
+
+-
+  tag: Hasaba Nanako
+  full: 枷场菜菜子
+  first: 菜菜子
+  last: 枷场菜菜子
+-
+  tag: Hasaba Mimiko
+  full: 枷场美美子
+  first: 美美子
+  last: 枷场美美子
+
+-
+  tag: Iori Utahime
+  full: 庵歌姬
+  first: 歌姬
+  last: 庵歌姬
+
+-
+  tag: Choso Kamo
+  full: 加茂宪纪
+  first: 宪纪
+  last: 加茂
+
+-
+  tag: Yoshino Junpei
+  full: 吉野顺平
+  first: 顺平
+  last: 吉野

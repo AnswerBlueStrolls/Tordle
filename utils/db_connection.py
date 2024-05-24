@@ -15,12 +15,32 @@ class AODatabase:
         if lang != None:
             self.language = lang
         self.fanfic_index = config["fanfic_index"]
+        conn = sqlite3.connect(self.db_name)
+        crsr = conn.cursor()
+        crsr.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.table_name,))
+        existing_table = crsr.fetchone()
+        if not existing_table:
+            print(f"table '{self.table_name}' not exist")
+            conn.close()
+            return
+        crsr.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", ("history",))
+        existing_table = crsr.fetchone()
+        if not existing_table:
+            print("Table history not exist, create it")
+            crsr.execute("CREATE TABLE IF NOT EXISTS history (work_id INTEGER PRIMARY KEY, result INTEGER)")
+            conn.close()
 
-    def get_one_fic_randomly(self):
+    def get_one_fic_randomly(self, history):
         if self.language == "":
-            sql = "SELECT * FROM {} ORDER BY RANDOM() LIMIT 1".format(self.table_name)
+            if history:
+                sql = "SELECT * FROM {} WHERE work_id NOT IN (SELECT work_id FROM history) ORDER BY RANDOM() LIMIT 1".format(self.table_name)
+            else:
+                sql = "SELECT * FROM {} ORDER BY RANDOM() LIMIT 1".format(self.table_name)
         else:
-            sql = "SELECT * FROM {} WHERE language LIKE '%{}%' ORDER BY RANDOM() LIMIT 1".format(self.table_name, language_map[self.language])
+            if history:
+                sql = "SELECT * FROM {} WHERE language LIKE '%{}%' and work_id NOT IN (SELECT work_id FROM history) ORDER BY RANDOM() LIMIT 1".format(self.table_name, language_map[self.language])
+            else:
+                sql = "SELECT * FROM {} WHERE language LIKE '%{}%' ORDER BY RANDOM() LIMIT 1".format(self.table_name, language_map[self.language])
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
         crsr.execute(sql)
@@ -31,7 +51,10 @@ class AODatabase:
             return "", "", ""
         id = result[0][0]
         body = result[0][self.fanfic_index]
-        tags = result[0][7].split(', ')
+        alltag = result[0][7]
+        tags = []
+        if alltag is not None:
+            tags = alltag.split(', ')
         conn.close()
         return id, body, tags
 
@@ -56,7 +79,14 @@ class AODatabase:
         body = result[0][self.fanfic_index]
         conn.close()
         return body
-    
+    def save_result_to_history(self, id, result):
+        conn = sqlite3.connect(self.db_name)
+        crsr = conn.cursor()
+        data_to_insert = (id, result)
+        crsr.execute(f"INSERT INTO history VALUES (?, ?)", data_to_insert)
+        conn.commit()
+        conn.close()
+
     def load_csv(self, csv_file):
         conn = sqlite3.connect(self.db_name)
         col_names = ['work_id', 'title', 'author', 'rating', 'category', 'fandom', 'relationship', 'character', 'additional tags', 'language', 'published', 'status', 'status date', 'words', 'chapters', 'comments', 'kudos', 'bookmarks', 'hits', 'all_kudos', 'all_bookmarks', 'body']
