@@ -34,12 +34,10 @@ class FaceOff:
         self.base_path = os.path.dirname(config_file)
         self.config = yaml.safe_load(open(config_file))
         self.config["db_name"] = os.path.join(self.base_path, self.config["db_name"])
-        self.debug_mode = self.config["debug"]
-        if self.debug_mode is None:
-            self.debug_mode = False
-        self.read_mode = self.config["read_mode"]
-        if self.read_mode is None:
-            self.read_mode = False
+        if "debug" in self.config:
+            self.debug_mode = self.config["debug"]
+        if "read_mode" in self.config:
+            self.read_mode = self.config["read_mode"]
         print(f'Read mode is {self.read_mode}')
         self.db = database.AODatabase()
         self.db.init_from_config(self.config)
@@ -47,9 +45,8 @@ class FaceOff:
             self.id = id
             self.original_body = self.db.get_fic_by_id(id)
         else:
-            self.history = self.config["history"]
-            if self.history is None:
-                self.history = False
+            if "history" in self.config:
+                self.history = self.config["history"]
             print(f'History is {self.history}')
             self.id, self.original_body, self.tags = self.db.get_one_fic_randomly(self.history)
         self.load_configs()

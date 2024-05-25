@@ -2,7 +2,7 @@ import aesthetic.face_off as face
 import sys, logging, os
 import argparse
 import crawler.loader as loader
-from utils.characters import load_name_list_from_yaml_file, replace_sensitive_words
+
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s %(message)s')
 
 def lottery(config_name, id):
