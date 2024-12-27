@@ -4,3 +4,9 @@ faker
 selenium
 pillow
 hanlp
+opencc
+flask
+bs4
+unidecode
+chardet
+pytest

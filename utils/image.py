@@ -1,84 +1,201 @@
+from typing import List, Tuple
+from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
-import math, os
-from utils.characters import load_name_list_from_yaml_file
-script_location = os.path.dirname(os.path.abspath(__file__))
-sensitive_words = load_name_list_from_yaml_file(os.path.join(script_location, "..", "metadata/common", "sensitive_words.yml"))
-def find_sensitive_words_index(text):
-    indexes = []
-    for keyword in sensitive_words:
-        index = text.find(keyword)
-        if index >= 0:
-            for i in range(index, index+len(keyword)):
-                indexes.append(i)
-    return sorted(indexes)
+import math
+import os
+from dataclasses import dataclass
 
-def remove_bottom_whitespace(img, margin):
-    width, height = img.size
-    bottom = height
-    data = list(img.getdata())
-    for y in range(height - 1, -1, -1):
-        total_sum = 0
-        for tup in data[y * width:(y + 1) * width]:
-            for num in tup:
-                total_sum += num
-        if total_sum != 255 * width * 3:
-            bottom = y + 1
-            break
-    img_cropped = img.crop((0, 0, width, bottom+margin))
-    return img_cropped
+from utils.characters import CharacterManager
 
-def text_to_image(text, font_path, font_size, image_width, margin, plain):
-    # Load a font
-    font = ImageFont.truetype(font_path, font_size)
-    line_spacing = 1
-    # Create a drawing context to measure text size
-    draw = ImageDraw.Draw(Image.new('RGB', (1, 1)))
+# 获取脚本所在目录
+SCRIPT_DIR = Path(__file__).parent
+SENSITIVE_WORDS = CharacterManager.load_name_list(
+    SCRIPT_DIR / ".." / "metadata" / "common" / "sensitive_words.yml"
+)
 
-    # Calculate the number of lines and height required for the text
-    lines = text.count('\n') + 1
-    line_height = font.getsize(text)[1] * line_spacing
-    text_height = lines * line_height 
+@dataclass
+class TextStyle:
+    """文本样式配置"""
+    font_path: str
+    font_size: int
+    line_spacing: float = 1.0
+    text_color: str = 'black'
+    background_color: str = 'white'
+    highlight_color: str = 'red'
 
-    # Calculate the size of the image with margins
-    image_height = math.floor(text_height + 2 * margin)
+class TextImageGenerator:
+    """文本图像生成器"""
+    def __init__(self, style: TextStyle):
+        self.style = style
+        self.font = ImageFont.truetype(style.font_path, style.font_size)
 
-    # Create a blank image with a white background and margins
-    img = Image.new('RGB', (image_width, image_height), color='white')
-    img.info['dpi'] = (600, 600)
-    # Initialize the drawing context
-    draw = ImageDraw.Draw(img)
+    def create_text_image(
+        self, 
+        text: str, 
+        image_width: int, 
+        margin: int, 
+        plain: bool = False
+    ) -> Image.Image:
+        """将文本转换为图像"""
+        # 创建绘图上下文来测量文本大小
+        temp_draw = ImageDraw.Draw(Image.new('RGB', (1, 1)))
+        
+        # 计算所需的行数和高度
+        lines = text.split('\n')
+        line_height = self.font.getsize('Ay')[1] * self.style.line_spacing
+        text_height = len(lines) * line_height
 
-    # Calculate the position to center text vertically within margins
-    y = margin + (text_height - lines * line_height) // 2
-    sensitive_count = 0
-    for line in text.split('\n'):
-        _, text_height = draw.textsize(line, font=font)
-        words_index = []
-        if not plain:
-            words_index = find_sensitive_words_index(line)
-        if len(words_index) == 0:
-            x = margin
-            draw.text((x, y), line, fill='black', font=font)
-        else:
-            sensitive_count += len(words_index)
-            start = 0
-            x = margin
-            for i in words_index:
-                if start < i:
-                    draw.text((x, y), line[start:i], fill='black', font=font)
-                    x += font.getsize(line[start:i])[0]
-                    start = i
-                if start == i:
-                    # keyword
-                    draw.text((x, y), line[i], fill='black', font=font)
-                    character_width = font.getsize(line[i])[0]
-                    draw.rectangle([(x, y+text_height/3), (x + character_width, y + text_height*0.8)], fill='red')
-                    x += character_width
-                    start += 1
-        y += int(text_height * line_spacing)
-    if sensitive_count > 0:
-        print("Found {} sensitive words!".format(sensitive_count))
-    return remove_bottom_whitespace(img, margin*3)
+        # 计算图像尺寸
+        image_height = math.floor(text_height + 2 * margin)
+        
+        # 创建图像
+        img = Image.new(
+            'RGB', 
+            (image_width, image_height), 
+            color=self.style.background_color
+        )
+        img.info['dpi'] = (600, 600)
+        draw = ImageDraw.Draw(img)
+
+        # 绘制文本
+        sensitive_count = self._draw_text_lines(
+            draw, lines, margin, line_height, plain
+        )
+        
+        if sensitive_count > 0:
+            print(f"Found {sensitive_count} sensitive words!")
+
+        return self._remove_bottom_whitespace(img, margin * 3)
+
+    def _draw_text_lines(
+        self, 
+        draw: ImageDraw.Draw, 
+        lines: List[str], 
+        margin: int, 
+        line_height: float,
+        plain: bool
+    ) -> int:
+        """绘制文本行"""
+        sensitive_count = 0
+        y = margin
+
+        for line in lines:
+            _, text_height = draw.textsize(line, font=self.font)
+            words_index = [] if plain else find_sensitive_words_index(line)
+            
+            if not words_index:
+                draw.text(
+                    (margin, y), 
+                    line, 
+                    fill=self.style.text_color, 
+                    font=self.font
+                )
+            else:
+                sensitive_count += len(words_index)
+                self._draw_line_with_highlights(
+                    draw, line, words_index, margin, y, text_height
+                )
+                
+            y += int(text_height * self.style.line_spacing)
+
+        return sensitive_count
+
+    def _draw_line_with_highlights(
+        self,
+        draw: ImageDraw.Draw,
+        line: str,
+        words_index: List[int],
+        x: int,
+        y: int,
+        text_height: int
+    ) -> None:
+        """绘制带有高亮的文本行"""
+        start = 0
+        current_x = x
+
+        for i in words_index:
+            # 绘制普通文本
+            if start < i:
+                normal_text = line[start:i]
+                draw.text(
+                    (current_x, y),
+                    normal_text,
+                    fill=self.style.text_color,
+                    font=self.font
+                )
+                current_x += self.font.getsize(normal_text)[0]
+            
+            # 绘制高亮字符
+            if start == i:
+                char = line[i]
+                draw.text(
+                    (current_x, y),
+                    char,
+                    fill=self.style.text_color,
+                    font=self.font
+                )
+                char_width = self.font.getsize(char)[0]
+                
+                # 绘制高亮矩形
+                draw.rectangle(
+                    [
+                        (current_x, y + text_height/3),
+                        (current_x + char_width, y + text_height * 0.8)
+                    ],
+                    fill=self.style.highlight_color
+                )
+                
+                current_x += char_width
+                start += 1
+
+    def _remove_bottom_whitespace(
+        self, 
+        img: Image.Image, 
+        margin: int
+    ) -> Image.Image:
+        """移除图像底部的空白"""
+        width, height = img.size
+        data = list(img.getdata())
+        
+        # 从底部向上扫描，找到最后一个非空白行
+        for y in range(height - 1, -1, -1):
+            row_data = data[y * width:(y + 1) * width]
+            if any(sum(pixel) != 255 * 3 for pixel in row_data):
+                bottom = y + 1
+                return img.crop((0, 0, width, bottom + margin))
+        
+        return img
+
+def find_sensitive_words_index(text: str) -> List[int]:
+    """查找敏感词的索引位置"""
+    indexes = set()
+    
+    for keyword in SENSITIVE_WORDS:
+        start = 0
+        while True:
+            index = text.find(keyword, start)
+            if index == -1:
+                break
+            indexes.update(range(index, index + len(keyword)))
+            start = index + 1
+            
+    return sorted(list(indexes))
+
+def text_to_image(
+    text: str,
+    font_path: str,
+    font_size: int,
+    image_width: int,
+    margin: int,
+    plain: bool = False
+) -> Image.Image:
+    """将文本转换为图像的便捷函数"""
+    style = TextStyle(
+        font_path=font_path,
+        font_size=font_size
+    )
+    generator = TextImageGenerator(style)
+    return generator.create_text_image(text, image_width, margin, plain)
 
 
 

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Python Script</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>洋妞无法伤害到我</h1>
+        <form id="control-form">
+            <label for="fandom">选择一个fandom：</label>
+            <select name="fandom" id="fandom">
+                {% for fandomoption in fandomoptions %}
+                <option value="{{ fandomoption }}">{{ fandomoption }}</option>
+                {% endfor %}
+            </select><br><br>
+            <label for="workid">或者直接输入作品id：</label>
+            <input type="text" id="workid" name="workid"><br><br>
+            
+            <button type="submit">Run</button>
+        </form>
+        <h2>结果：</h2>
+        <pre id="output"></pre>
+        
+        <div id="character-mapping">
+            <h2>猜猜他们是谁：</h2>
+            <div id="mapping-controls"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('control-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const fandom = document.getElementById('fandom').value;
+            const workid = document.getElementById('workid').value;
+
+            const response = await fetch('/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fandom, workid }),
+            });
+
+            const result = await response.json();
+            document.getElementById('output').textContent = result.text;
+
+            // 创建角色映射下拉框
+            const mappingDiv = document.getElementById('mapping-controls');
+            mappingDiv.innerHTML = ''; // 清空现有内容
+
+            // 对角色列表进行排序
+            const sortedCharacters = [...result.all_characters].sort();
+
+            for (const [original, replaced] of Object.entries(result.mappings)) {
+                const container = document.createElement('div');
+                container.className = 'mapping-control';
+                
+                const label = document.createElement('label');
+                label.textContent = `${replaced}`;
+                
+                const select = document.createElement('select');
+                select.id = `mapping-${replaced}`;
+                
+                // 使用排序后的角色列表
+                sortedCharacters.forEach(character => {
+                    const option = document.createElement('option');
+                    option.value = character;
+                    option.textContent = character;
+                    select.appendChild(option);
+                });
+
+                container.appendChild(label);
+                container.appendChild(select);
+                mappingDiv.appendChild(container);
+            }
+        });
+    </script>
+</body>
+</html>

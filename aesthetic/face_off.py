@@ -1,13 +1,15 @@
 import yaml, math, os, datetime, json, textwrap, logging
 from faker import Faker
 import utils.characters as characters, utils.db_connection as database, utils.translator as trans
+from utils.characters import CharacterManager, NameProcessor
 import utils.string_functions as str_func
 import utils.image as img_func
 from opencc import OpenCC
 from PIL import Image
-bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica", "Jesus", "Mr.", "Mrs."]
+bad_alias = ["Miss", "Amber", "Mr", "Mary", "Angelica", "Jesus", "Mr.", "Mrs.", "Dr."]
 hidden_str = "HIDDEN_INFO"
 hidden_color = "HIDDEN_COLOR"
+logger = logging.getLogger(__name__)
 class FaceOff:
     id = 0
     original_body = ""
@@ -23,13 +25,15 @@ class FaceOff:
     debug_mode = False
     base_path = ""
     tags = []
-    language = ""
     db = None
     history = False
     read_mode = False
+    web_mode = False
+    language = ""
 
     def __init__(self, config_file, id = 0):
         if config_file == "":
+            print(f'config file is empty {config_file}')
             return
         self.base_path = os.path.dirname(config_file)
         self.config = yaml.safe_load(open(config_file))
@@ -38,6 +42,12 @@ class FaceOff:
             self.debug_mode = self.config["debug"]
         if "read_mode" in self.config:
             self.read_mode = self.config["read_mode"]
+        if "web_mode" in self.config:
+            self.web_mode = self.config["web_mode"]
+        if "language" in self.config:
+            self.language = self.config["language"]
+        else:
+            self.language = "English"
         print(f'Read mode is {self.read_mode}')
         self.db = database.AODatabase()
         self.db.init_from_config(self.config)
@@ -49,10 +59,14 @@ class FaceOff:
                 self.history = self.config["history"]
             print(f'History is {self.history}')
             self.id, self.original_body, self.tags = self.db.get_one_fic_randomly(self.history)
+        print(f'finished init, id is {self.id}')
         self.load_configs()
 
     def load_configs(self):
         self.language = self.config.get("language")
+        if self.language is None:
+            self.language = "English"
+        logger.info(f'config language is {self.language}')
         if self.language == "English":
             self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml")))
             self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
@@ -94,14 +108,14 @@ class FaceOff:
         #try nlp first
         print("text length is", len(self.original_face_part), "language is", self.language)
         if self.language == "English":
-            found_characters = characters.find_characters_nlp(self.original_face_part)
-        elif self.language == "Chinese":
-            white_list = characters.get_whitelist(self.meta_characters)
-            found_characters = characters.find_characters_hanlp(self.original_face_part, white_list)
+            found_characters = NameProcessor.find_characters_nlp(self.original_face_part)
+        #elif self.language == "Chinese":
+            #white_list = CharacterManager.get_whitelist(self.meta_characters)
+            #found_characters = CharacterManager.find_characters_hanlp(self.original_face_part, white_list)
         if found_characters is None:
             return
-        print("Found {} characters".format(len(found_characters)))
-        if self.debug_mode:
+        logger.info("Found {} nlp characters".format(len(found_characters)))
+        if self.debug_mode or self.web_mode:
             print(found_characters)
         for nlp_name in found_characters:
             if nlp_name in self.exceptions:
@@ -122,13 +136,16 @@ class FaceOff:
                 if character_name not in self.changed_characters:
                     self.changed_characters[character_name] = ""
                 continue
-            if self.debug_mode or self.read_mode:
+            if self.web_mode:
+                logging.error("id: %d, name: %s", self.id, nlp_name)
+                return
+            elif self.debug_mode or self.read_mode:
                 self.ask_for_help(nlp_name)
             else:
                 print("Error occurred.")
                 if self.debug_mode:
                     print("name:", nlp_name)
-                logging.error("id: %d, name: %s", self.id, nlp_name)
+                
         if self.debug_mode:
             print("after mapping changed character is ", self.changed_characters)
         if self.language == "English":
@@ -281,20 +298,25 @@ class FaceOff:
         result = self.do_other_replace(result)
         return result
 
-    def face_off(self):
-        if self.id == "":
+    def get_face_off_content(self):
+        self.choose_face_part()
+        if self.language == "Chinese":
+            cc = OpenCC('t2s')
+            self.original_face_part = cc.convert(self.original_face_part)
+        if len(self.original_face_part) == 0:
+            print("Has no content")
+            return -1
+        result = self.do_face_off()
+        all_characters = list(self.meta_characters.keys())
+        return result, self.changed_characters, all_characters
+
+    def repeat_face_off(self):
+        if self.id == "" or self.id == 0 or self.id == '0':
             print("no id found")
             return -1
         print("ID: ", str(self.id))
         while True:
-            self.choose_face_part()
-            if self.language == "Chinese":
-                cc = OpenCC('t2s')
-                self.original_face_part = cc.convert(self.original_face_part)
-            if len(self.original_face_part) == 0:
-                print("Has no content")
-                return -1
-            result = self.do_face_off()
+            result, _, _ = self.get_face_off_content()
             if len(result) == 0:
                 return -1
             if self.debug_mode:

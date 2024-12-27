@@ -3,13 +3,11 @@ import sys, logging, os
 import argparse
 import crawler.loader as loader
 
-logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s %(message)s')
-
 def lottery(config_name, id):
     result = False
     while True:
         lottery = face.FaceOff(config_name, id)
-        result = lottery.face_off()
+        result = lottery.repeat_face_off()
         if result == 0:
             print("Continue ...")
         if result == -1:
@@ -17,6 +15,13 @@ def lottery(config_name, id):
             lottery.reset()
         else:
             return
+def web_lottery(config_name, id):
+    result = False
+    faceoff = face.FaceOff(config_name, id)
+    result, mappings, all_characters = faceoff.get_face_off_content()
+    if len(result) == 0:
+        print("Could not get result")
+    return result, mappings, all_characters
 
 def load(config_name, id, limit):
     load = loader.Loader(config_name)
