@@ -1,4 +1,8 @@
 import sqlite3, pandas
+import logging
+
+logger = logging.getLogger(__name__)
+
 language_map = {"English": "English", "Chinese": "Zhong Wen"}
 class AODatabase:
     db_name = ""
@@ -15,6 +19,7 @@ class AODatabase:
         if lang != None:
             self.language = lang
         self.fanfic_index = config["fanfic_index"]
+        logger.info(f"db_name is {self.db_name}, table_name is {self.table_name}, fanfic_index is {self.fanfic_index}") 
         conn = sqlite3.connect(self.db_name)
         crsr = conn.cursor()
         crsr.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.table_name,))

@@ -30,63 +30,68 @@ class FaceOff:
     read_mode = False
     web_mode = False
     language = ""
+    text_length = 5399
 
-    def __init__(self, config_file, id = 0):
-        if config_file == "":
-            print(f'config file is empty {config_file}')
+    def __init__(self, config, id = 0, text_length = 0):
+        if not config:
+            print('config is empty')
             return
-        self.base_path = os.path.dirname(config_file)
-        self.config = yaml.safe_load(open(config_file))
-        self.config["db_name"] = os.path.join(self.base_path, self.config["db_name"])
-        if "debug" in self.config:
-            self.debug_mode = self.config["debug"]
-        if "read_mode" in self.config:
-            self.read_mode = self.config["read_mode"]
-        if "web_mode" in self.config:
-            self.web_mode = self.config["web_mode"]
-        if "language" in self.config:
-            self.language = self.config["language"]
+            
+        self.config = config
+        self.debug_mode = config.debug_mode
+        self.read_mode = config.read_mode
+        self.web_mode = config.web_mode
+        self.language = config.language
+        self.history = config.history
+        if text_length < 0:
+            self.text_length = -1
         else:
-            self.language = "English"
+            self.text_length = self.config.get("limit")
         print(f'Read mode is {self.read_mode}')
         self.db = database.AODatabase()
-        self.db.init_from_config(self.config)
+        self.db.init_from_config(config.config)  # 暂时保持兼容性
+        
         if id > 0:
             self.id = id
             self.original_body = self.db.get_fic_by_id(id)
         else:
-            if "history" in self.config:
-                self.history = self.config["history"]
             print(f'History is {self.history}')
             self.id, self.original_body, self.tags = self.db.get_one_fic_randomly(self.history)
         print(f'finished init, id is {self.id}')
         self.load_configs()
 
     def load_configs(self):
-        self.language = self.config.get("language")
-        if self.language is None:
-            self.language = "English"
+        self.language = self.config.language
         logger.info(f'config language is {self.language}')
+        
+        # 加载角色配置
+        self.set_meta_characters(characters.load_characters_from_yaml_file(self.config.get_character_file()))
+        
+        # 加载特殊名称配置
+        self.special_names = characters.load_name_list_from_yaml_file(self.config.get_special_names_file())
+        
         if self.language == "English":
-            self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters.yml")))
-            self.exceptions = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "exception_names.yml"))
-            self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names.yml"))
-        if self.language == "Chinese":
-            self.set_meta_characters(characters.load_characters_from_yaml_file(os.path.join(self.base_path, "characters_cn.yml")))
-            self.special_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "special_names_cn.yml"))
-            self.remove_names = characters.load_name_list_from_yaml_file(os.path.join(self.base_path, "remove_names_cn.yml"))
+            self.exceptions = characters.load_name_list_from_yaml_file(self.config.get_exception_names_file())
+        elif self.language == "Chinese":
+            self.remove_names = characters.load_name_list_from_yaml_file(self.config.get_remove_names_file())
+
     def choose_face_part(self):
+        # 如果是全文模式，直接使用全文
+        if self.text_length == -1:
+            print("Using full text")
+            self.set_original_face_part(self.original_body)
+            return
+            
         half = math.floor(len(self.original_body)/2)
-        total = self.config.get("limit")
-        if total is None:
+        if self.text_length is None:
              print("No limit set, use full text")
              self.set_original_face_part(self.original_body)
              return
-        if half < total:
+        if half < self.text_length:
             print("fic is too short, use the whole fic, length is", len(self.original_body))
             self.original_face_part = self.original_body
             return
-        self.original_face_part, self.original_face_end_index = str_func.choose_piece(self.original_body, total, self.original_face_end_index)
+        self.original_face_part, self.original_face_end_index = str_func.choose_piece(self.original_body, self.text_length, self.original_face_end_index)
     
     def mapping_meta_character(self, in_name):
         for first in self.meta_characters.keys():
@@ -138,7 +143,7 @@ class FaceOff:
                 continue
             if self.web_mode:
                 logging.error("id: %d, name: %s", self.id, nlp_name)
-                return
+                continue
             elif self.debug_mode or self.read_mode:
                 self.ask_for_help(nlp_name)
             else:

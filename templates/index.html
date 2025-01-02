@@ -16,13 +16,35 @@
                 <option value="{{ fandomoption }}">{{ fandomoption }}</option>
                 {% endfor %}
             </select><br><br>
+
+            <label for="language">选择语言：</label>
+            <select name="language" id="language">
+                {% for lang in supported_languages %}
+                <option value="{{ lang }}">{{ lang }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="text_length">文本长度：</label>
+            <select name="text_length" id="text_length">
+                <option value="-1">全文</option>
+                <option value="1">节选</option>
+            </select><br><br>
+
             <label for="workid">或者直接输入作品id：</label>
             <input type="text" id="workid" name="workid"><br><br>
             
             <button type="submit">Run</button>
         </form>
         <h2>结果：</h2>
-        <pre id="output"></pre>
+        <div class="book-container">
+            <button class="page-btn prev-btn">←</button>
+            <div class="book">
+                <div class="page left-page"></div>
+                <div class="page right-page"></div>
+            </div>
+            <button class="page-btn next-btn">→</button>
+        </div>
+        <div class="page-number">第 <span id="current-page">1</span>/<span id="total-pages">1</span> 页</div>
         
         <div id="character-mapping">
             <h2>猜猜他们是谁：</h2>
@@ -32,27 +54,129 @@
 
     <script>
         const form = document.getElementById('control-form');
+        let currentPage = 0;
+        let pages = [];
+        let result = null;  // 添加全局变量存储 API 返回结果
+
+        function splitTextIntoPages(text) {
+            const tempDiv = document.createElement('div');
+            tempDiv.className = 'page';  // 使用与实际页面相同的样式
+            document.body.appendChild(tempDiv);
+            
+            const pages = [''];
+            let currentPage = 0;
+            let currentText = '';
+            let lastSpaceIndex = 0;
+            
+            // 按字符逐步添加内容
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                currentText += char;
+                
+                // 记录最后一个空格或换行符的位置
+                if (char === ' ' || char === '\n') {
+                    lastSpaceIndex = currentText.length - 1;
+                }
+                
+                // 使用 highlightCharacters 处理文本，以准确测量高度
+                tempDiv.innerHTML = highlightCharacters(currentText, result.mappings);
+                
+                // 如果内容超出页面高度，创建新页面
+                if (tempDiv.scrollHeight > tempDiv.clientHeight) {
+                    // 如果找到了空格，从空格处分页
+                    if (lastSpaceIndex > 0) {
+                        pages[currentPage] = currentText.slice(0, lastSpaceIndex + 1);
+                        currentText = currentText.slice(lastSpaceIndex + 1);
+                        lastSpaceIndex = 0;
+                    } else {
+                        // 如果没有找到空格（极长的单词），则从当前位置强制分页
+                        pages[currentPage] = currentText.slice(0, -1);
+                        currentText = char;
+                    }
+                    currentPage++;
+                    tempDiv.innerHTML = highlightCharacters(currentText, result.mappings);
+                }
+            }
+            
+            // 添加最后一页
+            if (currentText) {
+                pages[currentPage] = currentText;
+            }
+            
+            document.body.removeChild(tempDiv);
+            return pages;
+        }
+
+        // 将 highlightCharacters 函数移到全局作用域
+        function highlightCharacters(text, mappings) {
+            let highlightedText = text;
+            for (const [original, replaced] of Object.entries(mappings)) {
+                const regex = new RegExp(replaced, 'g');
+                highlightedText = highlightedText.replace(
+                    regex, 
+                    `<span class="character-highlight" data-original="${original}">${replaced}</span>`
+                );
+            }
+            return highlightedText;
+        }
+
+        function updatePages() {
+            const leftPage = document.querySelector('.left-page');
+            const rightPage = document.querySelector('.right-page');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            
+            leftPage.innerHTML = pages[currentPage] ? highlightCharacters(pages[currentPage], result.mappings) : '';
+            rightPage.innerHTML = pages[currentPage + 1] ? highlightCharacters(pages[currentPage + 1], result.mappings) : '';
+            
+            prevBtn.disabled = currentPage === 0;
+            nextBtn.disabled = currentPage >= pages.length - 2;
+            
+            document.getElementById('current-page').textContent = Math.floor(currentPage / 2) + 1;
+            document.getElementById('total-pages').textContent = Math.ceil(pages.length / 2);
+        }
+
+        // 添加翻页事件监听器
+        document.querySelector('.prev-btn').addEventListener('click', () => {
+            if (currentPage > 0) {
+                currentPage -= 2;
+                updatePages();
+            }
+        });
+
+        document.querySelector('.next-btn').addEventListener('click', () => {
+            if (currentPage < pages.length - 2) {
+                currentPage += 2;
+                updatePages();
+            }
+        });
+
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const fandom = document.getElementById('fandom').value;
             const workid = document.getElementById('workid').value;
+            const language = document.getElementById('language').value;
+            const text_length = document.getElementById('text_length').value;
 
             const response = await fetch('/run', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fandom, workid }),
+                body: JSON.stringify({ fandom, workid, language, text_length }),
             });
 
-            const result = await response.json();
-            document.getElementById('output').textContent = result.text;
+            result = await response.json();  // 存储到全局变量
+            const cleanedText = result.text
+                .replace(/\n\s*\n/g, '\n\n')
+                .trim();
+            
+            currentPage = 0;
+            pages = splitTextIntoPages(cleanedText);
+            updatePages();
 
-            // 创建角色映射下拉框
+            // 创建角色映射搜索框
             const mappingDiv = document.getElementById('mapping-controls');
             mappingDiv.innerHTML = ''; // 清空现有内容
-
-            // 对角色列表进行排序
-            const sortedCharacters = [...result.all_characters].sort();
 
             for (const [original, replaced] of Object.entries(result.mappings)) {
                 const container = document.createElement('div');
@@ -61,19 +185,26 @@
                 const label = document.createElement('label');
                 label.textContent = `${replaced}`;
                 
-                const select = document.createElement('select');
-                select.id = `mapping-${replaced}`;
+                // 创建输入框和数据列表
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = `mapping-${replaced}`;
+                input.setAttribute('list', `datalist-${replaced}`);
+                input.className = 'character-input';
                 
-                // 使用排序后的角色列表
-                sortedCharacters.forEach(character => {
+                const datalist = document.createElement('datalist');
+                datalist.id = `datalist-${replaced}`;
+                
+                // 添加选项到数据列表
+                result.all_characters.forEach(character => {
                     const option = document.createElement('option');
                     option.value = character;
-                    option.textContent = character;
-                    select.appendChild(option);
+                    datalist.appendChild(option);
                 });
 
                 container.appendChild(label);
-                container.appendChild(select);
+                container.appendChild(input);
+                container.appendChild(datalist);
                 mappingDiv.appendChild(container);
             }
         });
